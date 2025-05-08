@@ -16,8 +16,8 @@ display_intro = True
 game_running = False
 game_start = True
 
-# Box Ascii -
 
+# Box Ascii -
 top_bot = "═"
 bot = "═"
 sides = "║"
@@ -28,8 +28,7 @@ bot_left = "╚"
 bot_right = "╝"
 
 
-# Items -
-
+# Items Dict -
 plr_inv = {"Logs": 0,
            "Planks": 0,
            "Stick": 0,
@@ -44,6 +43,7 @@ plr_inv = {"Logs": 0,
            "Stone Axe": 1}
 
 
+# Controls list -
 ctrs_list = ["Controls / Player Choices",
              " ",
              "[controls] - Open this menu (Controls / Player Choices)",
@@ -53,9 +53,8 @@ ctrs_list = ["Controls / Player Choices",
              "[Smelt] - Open smelting menu.",
              "[Bag] - See what items you have."]
 
-quit_text = "Thank you for playing!"
 
-
+# Find length of all the controls in list to create box around them
 for ctr in ctrs_list:
     char_len_of_ctrs.append(len(ctr))
 
@@ -64,14 +63,13 @@ width_ctrs = max(char_len_of_ctrs)
 
 # Functions -
 
-
+# Center text - with 100 padding
 def print_c_str(text, padding=100, char_fill=" "):
     text = text.center(padding, char_fill)
     print(text)
 
-# def print_multi_line(text, width=100, )
 
-
+# Control Menu - with dynamic box around
 def ctrs_menu():
     print_c_str(f"{top_left}{top_bot*(width_ctrs+2)}{top_right}")
 
@@ -81,10 +79,15 @@ def ctrs_menu():
     print_c_str(f"{bot_left}{top_bot*(width_ctrs+2)}{bot_right}")
 
 
+# Main Menu Text -
 def main_menu_txt():
     print_c_str("Welcome To CrafText")
     print_c_str("Text-based crafting game!")
     print()
+
+
+# Quit Game - Text w box around, 5 second sleep before window closes.
+quit_text = "Thank you for playing!"
 
 
 def quit_game():
@@ -97,6 +100,9 @@ def quit_game():
     exit()
 
 
+# Game Loop -
+
+# Main Menu screen -
 while main_menu:
 
     if display_intro == True:
@@ -120,8 +126,10 @@ while main_menu:
         print_c_str("Action entered is invalid, Try again!")
 
 
+# Main Game Loop -
 while game_running:
 
+    # Game Intro -
     if game_start == True:
 
         print_c_str(f"{top_left}{top_bot*98}{top_right}")
@@ -141,15 +149,16 @@ while game_running:
     player_input = input()
 
 
-# Quit -
+# Quit Game -
     if player_input.lower() == "quit":
         quit_game()
 
 
-# Controls -
+# Open Controls Menu -
     elif player_input.lower() == "controls":
         ctrs_menu()
 
+# See Bag -
     elif player_input.lower() == "bag":
         for itm, qty in plr_inv.items():
             if qty >= 1:
@@ -158,11 +167,14 @@ while game_running:
 
 # Wood Chop -
     elif player_input.lower() == "chop":
+
+        # If player has stone axe
         if plr_inv.get("Stone Axe") >= 1:
             player_input = input(
                 "Would you like to use your Stone Axe? (Yes/No): ")
             print()
 
+    # Player uses Stone Axe
             if player_input.lower() == "yes":
 
                 qty_added = random.randint(2, 3)
@@ -171,6 +183,7 @@ while game_running:
                 print_c_str(
                     f"You used your Stone Axe to chop down a tree got {qty_added} Logs. You now have {plr_inv.get('Logs')} Logs.")
 
+    # Player doesn't use Stone Axe
             elif player_input.lower() == "no":
 
                 qty_added = random.randint(0, 1)
@@ -179,20 +192,24 @@ while game_running:
                     "You chose to try to chop a tree without the Axe from your bag... ")
                 print()
 
+    # Failed to get Log w Fist (Have Stone Axe)
                 if qty_added == 0:
 
                     print_c_str(
                         f"You punched a tree as hard as you could but nothing broke loose. You still have {plr_inv.get('Logs')} Logs.")
                     print()
 
+    # Gain Log w Fist (Have Stone Axe)
                 else:
 
-                    # Gain 1 Log
                     plr_inv["Logs"] += qty_added
 
                     print_c_str(
                         f"You shook the tree as hard as you could and a branch fell off. You now have {plr_inv.get('Logs')} Logs.")
+
+    # Failed to get Log w Fist
         else:
+
             qty_added = random.randint(0, 1)
 
             if qty_added == 0:
@@ -200,9 +217,9 @@ while game_running:
                 print_c_str(
                     f"You tried to karate chop the tree but, you didn't even make a dent. You still have {plr_inv.get('Logs')} Logs and a bruised hand")
 
+    # Gain Log w fist
             else:
 
-                # Gain 1 Log
                 plr_inv["Logs"] += qty_added
 
                 print_c_str(
@@ -231,31 +248,25 @@ while game_running:
             "Type [controls] if you want to see actions you can perform.")
 
 
-# Actions
-# Hit Tree w fist / pick %50 chance with fist.
-
+TODO -
 # Mine Rock w (pick required) chance to get stone coal, if stone pick, chance to get iron
-
 # If iron pick chance to get gold
 
-# Craft
-
+# Crafting - Only show craft option if inventory has required materials.
 # Plank 2 -1 log
 # Stick 4 -1 log
 
 # Wood pick 10 durability, 2 stick, 3 plank
+# Gold star 5 gold win    continue playing, new game, quit.
 
 # 20 durability
 # Stone axe, 2 stick, 3 stone
 # Stone pickaxe, 2 stick 3 stone
-# Iron pick
 
-# Gold star 5 gold win    continue playing or quit.
+# 30 durability
+# Iron pick
 
 
 # Smelting
 # Iron, 2iron ore 1 coal
-
 # Charcoal, 4 log
-
-# Only show craft option if inventory has required materials.
