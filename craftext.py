@@ -2,6 +2,12 @@ import time
 import textwrap
 import random
 
+# TODO - put box on invalid action
+# TODO - finish mining
+# TODO - update chop to be written like mining
+# TODO - do crafting, smelting
+
+
 # CrafText -
 
 # Variables -
@@ -42,11 +48,10 @@ plr_inv = {"Logs": 0,
            "Iron Ore": 0,
            "Iron Ingot": 0,
            "Gold": 0,
-           "Wooden Pickaxe": 0,
-           "Stone Pickaxe": 0,
+           "Wooden Pickaxe": 1,
+           "Stone Pickaxe": 1,
            "Iron Pickaxe": 1,
            "Stone Axe": 1}
-
 
 # Controls list -
 ctrs_list = ["Controls / Player Choices",
@@ -132,10 +137,8 @@ def open_bag():
             print_c_str(f"{itm:15}: {qty:3}")
 
 
-#
-#
 # Game Loop -
-# Main Menu screen -
+    # Main Menu screen -
 while main_menu:
 
     if display_intro == True:
@@ -158,8 +161,7 @@ while main_menu:
     else:
         print_c_str_nl("Action entered is invalid, Try again!")
 
-
-# Main Game Loop -
+    # Main Game Loop -
 while game_running:
 
     # Game Intro -
@@ -178,6 +180,8 @@ while game_running:
 
         game_start = False
 
+    if game_start == False:
+        print_c_str_nl("What would you like to do next?: ")
     player_input = input()
 
 
@@ -204,10 +208,10 @@ while game_running:
         while game_chop:
 
             # If player has stone axe
-            if plr_inv.get("Stone Axe") >= 1:
+            if plr_inv.get("Stone Axe") > 0:
+
                 print_c_str_nl(
                     "Would you like to use your Stone Axe? (Yes/No): ")
-
                 player_input = input()
 
                 if player_input.lower() == "quit":
@@ -276,24 +280,26 @@ while game_running:
 # Mine -
     elif player_input.lower() == "mine":
 
-        if plr_inv.get("Iron Pickaxe") >= 1:
+        game_mine = True
 
-            player_input = input(
+        while plr_inv.get("Iron Pickaxe") >= 1:
+
+            print_c_str_nl(
                 "Would you like to use your Iron Pickaxe to mine? (Yes/No): ")
-            print()
-
-            if player_input.lower() == "no":
-                pass
+            player_input = input()
 
     # Mine w Iron Pickaxe -
+            if player_input.lower() == "quit":
+                quit_game()
+
             elif player_input.lower() == "yes":
+
+                game_mine = False
                 type_added = random.randint(1, 10)
-                print(type_added)
 
     # Gain Stone w Iron Pickaxe
                 if 1 <= type_added <= 2:
                     qty_added = random.randint(3, 4)
-
                     plr_inv["Stone"] += qty_added
 
                     print_c_str_nl(
@@ -303,7 +309,6 @@ while game_running:
                 elif 3 <= type_added <= 5:
 
                     qty_added = random.randint(2, 3)
-
                     plr_inv["Coal"] += qty_added
 
                     print_c_str_nl(
@@ -313,7 +318,6 @@ while game_running:
                 elif 6 <= type_added <= 8:
 
                     qty_added = random.randint(1, 2)
-
                     plr_inv["Iron Ore"] += qty_added
 
                     print_c_str_nl(
@@ -323,22 +327,66 @@ while game_running:
                 else:
 
                     qty_added = 1
-
                     plr_inv["Gold"] += qty_added
 
                     print_c_str_nl(
                         f"After hours down in the mine, sweat dripping form your face, you see a sparkle of gold in the corner of your eye. You gained {qty_added} Gold")
 
+                break
+
+            elif player_input.lower() == "no":
+                break
+
+            else:
+                incorrect_answer()
     # Mine w Stone Pickaxe
-        elif plr_inv.get("Stone Pickaxe") >= 1:
-            pass
+        if game_mine:
+            while plr_inv.get("Stone Pickaxe") >= 1:
 
-        elif plr_inv.get("Wooden Pickaxe") >= 1:
-            pass
+                print_c_str_nl(
+                    "Would you like to use your Stone Pickaxe to mine? (Yes/No): ")
+                player_input = input()
 
-        else:
+                if player_input.lower() == "quit":
+                    quit_game()
 
+                elif player_input.lower() == "yes":
+
+                    game_mine = False
+                    print(1)
+                    break
+
+                elif player_input.lower() == "no":
+                    break
+
+                else:
+                    incorrect_answer()
+
+        if game_mine:
+            while plr_inv.get("Wooden Pickaxe") >= 1:
+
+                print_c_str_nl(
+                    "Would you like to use your Wooden Pickaxe to mine? (Yes/No): ")
+                player_input = input()
+
+                if player_input.lower() == "quit":
+                    quit_game()
+
+                elif player_input.lower() == "yes":
+
+                    game_mine = False
+                    print(1)
+                    break
+
+                elif player_input.lower() == "no":
+                    break
+
+                else:
+                    incorrect_answer()
+
+        if game_mine:
             print_c_str_nl("You require a Pickaxe to mine rocks")
+            game_mine = False
 
 
 # Craft -
@@ -358,7 +406,9 @@ while game_running:
             "Type [Controls] if you want to see actions you can perform.")
 
 
-# TODO
+# TODO - Planning -
+
+
 # Mine Rock w (pick required) chance to get stone coal, if stone pick, chance to get iron
 # If iron pick chance to get gold
 
