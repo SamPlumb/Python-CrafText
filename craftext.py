@@ -47,9 +47,9 @@ plr_inv = {"Logs": 0,
            "Iron Ore": 0,
            "Iron Ingot": 0,
            "Gold": 0,
-           "Wooden Pickaxe": 0,
-           "Stone Pickaxe": 0,
-           "Iron Pickaxe": 0,
+           "Wooden Pickaxe": 1,
+           "Stone Pickaxe": 1,
+           "Iron Pickaxe": 1,
            "Stone Axe": 1}
 
 # Controls list -
@@ -83,6 +83,17 @@ def print_c_str_nl(text, padding=100, char_fill=" "):
     print()
 
 
+# Print line of text in a dynamic box
+def print_in_box(text: str):
+    str_len = (len(text))
+
+    print_c_str(f"{top_left}{top_bot*(str_len+2)}{top_right}")
+
+    print_c_str(f"║ {text:^{str_len}} ║")
+
+    print_c_str_nl(f"{bot_left}{top_bot*(str_len+2)}{bot_right}")
+
+
 # Control Menu - with dynamic box around
 def ctrs_menu():
     print_c_str(f"{top_left}{top_bot*(width_ctrs+2)}{top_right}")
@@ -90,45 +101,19 @@ def ctrs_menu():
     for ctrs in ctrs_list:
         print_c_str(f"║ {ctrs:^{width_ctrs}} ║")
 
-    print_c_str(f"{bot_left}{top_bot*(width_ctrs+2)}{bot_right}")
-    print()
+    print_c_str_nl(f"{bot_left}{top_bot*(width_ctrs+2)}{bot_right}")
 
 
 # Main Menu Text -
 def main_menu_txt():
-    print_c_str_nl("Welcome To CrafText")
-    print_c_str_nl("Text-based crafting game!")
-    print()
+    print_in_box("Welcome To CrafText")
 
 
 # Quit Game - Text w box around, 5 second sleep before window closes.
 def quit_game():
-
-    quit_text = "Thank you for playing!"
-
-    print_c_str(f"{top_left}{top_bot*(len(quit_text)+2)}{top_right}")
-    print_c_str(f"║ {quit_text:^{len(quit_text)}} ║")
-    print_c_str(f"{bot_left}{top_bot*(len(quit_text)+2)}{bot_right}")
-
+    print_in_box("Thank you for playing!")
     time.sleep(5)
     exit()
-
-
-# Incorrect Answer (Yes/No) -
-def incorrect_answer():
-
-    incorrect_text = ("Answer MUST be either Yes or No: ")
-
-    print_c_str(f"{top_left}{top_bot*(len(incorrect_text)+2)}{top_right}")
-    print_c_str(f"║ {incorrect_text:^{len(incorrect_text)}} ║")
-    print_c_str_nl(f"{bot_left}{top_bot*(len(incorrect_text)+2)}{bot_right}")
-
-
-# Action invalid -
-def action_invalid():
-    print_c_str(f"{top_left}{top_bot*39}{top_right}")
-    print_c_str("║ Action entered is invalid, Try again! ║")
-    print_c_str_nl(f"{bot_left}{top_bot*39}{bot_right}")
 
 
 # Open Bag
@@ -162,7 +147,7 @@ while main_menu:
         game_running = True
 
     else:
-        action_invalid()
+        print_in_box("Action entered is invalid, Try again!")
 
 # Main Game Loop -
 while game_running:
@@ -249,7 +234,7 @@ while game_running:
      # If player entered incorrect answer
                 else:
 
-                    incorrect_answer()
+                    print_in_box("Answer MUST be either Yes or No, Try Again!")
 
     # If player doesn't have an Axe
             elif plr_inv.get("Stone Axe") == 0:
@@ -273,66 +258,67 @@ while game_running:
 
 # Mine -
     elif player_input.lower() == "mine":
-
         game_mine = True
 
-        while plr_inv.get("Iron Pickaxe") >= 1:
-
-            print_c_str_nl(
-                "Would you like to use your Iron Pickaxe to mine? (Yes/No): ")
-            player_input = input()
-
     # Mine w Iron Pickaxe -
-            if player_input.lower() == "quit":
-                quit_game()
+        if game_mine:
+            while plr_inv.get("Iron Pickaxe") >= 1:
 
-            elif player_input.lower() == "yes":
+                print_c_str_nl(
+                    "Would you like to use your Iron Pickaxe to mine? (Yes/No): ")
+                player_input = input()
 
-                game_mine = False
-                type_added = random.randint(1, 10)
+                if player_input.lower() == "quit":
+                    quit_game()
 
-    # Gain Stone w Iron Pickaxe
-                if 1 <= type_added <= 2:
-                    qty_added = random.randint(3, 4)
-                    plr_inv["Stone"] += qty_added
+                elif player_input.lower() == "yes":
 
-                    print_c_str_nl(
-                        f"You knocked a chunk of rock loose with your Iron Pickaxe. It was just {qty_added} Stone. You now have {plr_inv.get('Stone')} Stone.")
+                    game_mine = False
+                    type_added = random.randint(1, 10)
 
-    # Gain Coal w Iron Pickaxe
-                elif 3 <= type_added <= 5:
+        # Gain Stone w Iron Pickaxe
+                    if 1 <= type_added <= 2:
+                        qty_added = random.randint(3, 4)
+                        plr_inv["Stone"] += qty_added
 
-                    qty_added = random.randint(2, 3)
-                    plr_inv["Coal"] += qty_added
+                        print_c_str_nl(
+                            f"You knocked a chunk of rock loose with your Iron Pickaxe. It was just {qty_added} Stone. You now have {plr_inv.get('Stone')} Stone.")
 
-                    print_c_str_nl(
-                        f"You swung the Iron pickaxe against the rock, breaking it into chunks Coal. You found {qty_added} Coal. You now have {plr_inv.get('Coal')} Coal.")
+        # Gain Coal w Iron Pickaxe
+                    elif 3 <= type_added <= 5:
 
-    # Gain Iron Ore w Iron Pickaxe
-                elif 6 <= type_added <= 8:
+                        qty_added = random.randint(2, 3)
+                        plr_inv["Coal"] += qty_added
 
-                    qty_added = random.randint(1, 2)
-                    plr_inv["Iron Ore"] += qty_added
+                        print_c_str_nl(
+                            f"You swung the Iron pickaxe against the rock, breaking it into chunks Coal. You found {qty_added} Coal. You now have {plr_inv.get('Coal')} Coal.")
 
-                    print_c_str_nl(
-                        f"You hurled your pickaxe at the rock and split a large rock in half revealing {qty_added} Iron. You now have {plr_inv.get('Iron Ore')} Iron Ore.")
+        # Gain Iron Ore w Iron Pickaxe
+                    elif 6 <= type_added <= 8:
 
-    # Gain Gold w Iron Pickaxe
+                        qty_added = random.randint(1, 2)
+                        plr_inv["Iron Ore"] += qty_added
+
+                        print_c_str_nl(
+                            f"You hurled your pickaxe at the rock and split a large rock in half revealing {qty_added} Iron Ore. You now have {plr_inv.get('Iron Ore')} Iron Ore.")
+
+        # Gain Gold w Iron Pickaxe
+                    else:
+
+                        qty_added = 1
+                        plr_inv["Gold"] += qty_added
+
+                        print_c_str_nl(
+                            f"After hours down in the mine, sweat dripping form your face, you see a sparkle of gold in the corner of your eye. You gained {qty_added} Gold")
+
+                    break
+
+                elif player_input.lower() == "no":
+                    break
+
                 else:
+                    print_in_box("Answer MUST be either Yes or No, Try Again!")
 
-                    qty_added = 1
-                    plr_inv["Gold"] += qty_added
-
-                    print_c_str_nl(
-                        f"After hours down in the mine, sweat dripping form your face, you see a sparkle of gold in the corner of your eye. You gained {qty_added} Gold")
-
-                break
-
-            elif player_input.lower() == "no":
-                break
-
-            else:
-                incorrect_answer()
     # Mine w Stone Pickaxe
         if game_mine:
             while plr_inv.get("Stone Pickaxe") >= 1:
@@ -345,17 +331,44 @@ while game_running:
                     quit_game()
 
                 elif player_input.lower() == "yes":
-
+                    # TODO - Add some more flavour text, digging deeper
                     game_mine = False
-                    print(1)
+                    type_added = random.randint(1, 10)
+
+        # Gain Stone w Stone Pickaxe
+                    if 1 <= type_added <= 4:
+                        qty_added = random.randint(1, 3)
+                        plr_inv["Stone"] += qty_added
+
+                        print_c_str_nl(
+                            f"You hit every rock in sight and found nothing but rock. You gained {qty_added} Stone. You now have {plr_inv.get('Stone')} Stone.")
+
+        # Gain Coal w Stone Pickaxe
+                    elif 5 <= type_added <= 7:
+
+                        qty_added = random.randint(1, 2)
+                        plr_inv["Coal"] += qty_added
+
+                        print_c_str_nl(
+                            f"You found a black rock while mining, It seemed different to other rocks so held onto it for safe keeping. You found {qty_added} Coal. You now have {plr_inv.get('Coal')} Coal.")
+
+        # Gain Iron Ore w Stone Pickaxe
+                    else:
+
+                        plr_inv["Iron Ore"] += 1
+
+                        print_c_str_nl(
+                            f"After hours of no luck, a small redish silver rock broke off the wall. You gained {qty_added} Iron Ore. You now have {plr_inv.get('Iron Ore')} Iron Ore.")
+
                     break
 
                 elif player_input.lower() == "no":
                     break
 
                 else:
-                    incorrect_answer()
+                    print_in_box("Answer MUST be either Yes or No, Try Again!")
 
+    # Mine w Wooden Pickaxe
         if game_mine:
             while plr_inv.get("Wooden Pickaxe") >= 1:
 
@@ -376,10 +389,12 @@ while game_running:
                     break
 
                 else:
-                    incorrect_answer()
+                    print_in_box("Answer MUST be either Yes or No, Try Again!")
 
+    # If player does not have/select a Pickaxe
         if game_mine:
-            print_c_str_nl("You require a Pickaxe to mine rocks")
+
+            print_in_box("You require a Pickaxe to mine rocks")
             game_mine = False
 
 # Craft -
@@ -392,7 +407,8 @@ while game_running:
 
 # Invalid Action -
     else:
-        action_invalid()
+
+        print_in_box("Action entered is invalid, Try again!")
         print_c_str_nl(
             "Type [Controls] if you want to see actions you can perform.")
 
