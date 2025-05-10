@@ -2,7 +2,6 @@ import time
 import textwrap
 import random
 
-# TODO - put box on invalid action
 # TODO - finish mining
 # TODO - update chop to be written like mining
 # TODO - do crafting, smelting
@@ -48,9 +47,9 @@ plr_inv = {"Logs": 0,
            "Iron Ore": 0,
            "Iron Ingot": 0,
            "Gold": 0,
-           "Wooden Pickaxe": 1,
-           "Stone Pickaxe": 1,
-           "Iron Pickaxe": 1,
+           "Wooden Pickaxe": 0,
+           "Stone Pickaxe": 0,
+           "Iron Pickaxe": 0,
            "Stone Axe": 1}
 
 # Controls list -
@@ -67,13 +66,10 @@ ctrs_list = ["Controls / Player Choices",
 # Find length of all the controls in list to create box around them
 for ctr in ctrs_list:
     char_len_of_ctrs.append(len(ctr))
-
 width_ctrs = max(char_len_of_ctrs)
 
 
 # Functions -
-
-
 # Center text - with 100 padding
 def print_c_str(text, padding=100, char_fill=" "):
     text = text.center(padding, char_fill)
@@ -125,43 +121,50 @@ def incorrect_answer():
 
     print_c_str(f"{top_left}{top_bot*(len(incorrect_text)+2)}{top_right}")
     print_c_str(f"║ {incorrect_text:^{len(incorrect_text)}} ║")
-    print_c_str(f"{bot_left}{top_bot*(len(incorrect_text)+2)}{bot_right}")
-    print()
+    print_c_str_nl(f"{bot_left}{top_bot*(len(incorrect_text)+2)}{bot_right}")
+
+
+# Action invalid -
+def action_invalid():
+    print_c_str(f"{top_left}{top_bot*39}{top_right}")
+    print_c_str("║ Action entered is invalid, Try again! ║")
+    print_c_str_nl(f"{bot_left}{top_bot*39}{bot_right}")
 
 
 # Open Bag
 def open_bag():
-
+    print_c_str(f"{top_left}{top_bot*22}{top_right}")
     for itm, qty in plr_inv.items():
         if qty > 0:
-            print_c_str(f"{itm:15}: {qty:3}")
+            print_c_str(f"║ {itm:15}: {qty:3} ║")
+
+    print_c_str_nl(f"{bot_left}{top_bot*22}{bot_right}")
 
 
-# Game Loop -
-    # Main Menu screen -
+# Main Menu Loop -
 while main_menu:
 
     if display_intro == True:
         main_menu_txt()
         ctrs_menu()
+        print()
         display_intro = False
 
-    print()
     print_c_str_nl("Type [Start] to start a new game, [Quit] to exit: ")
-    start = input()
+    player_input = input()
 
-    if start.lower() == "quit":
+    if player_input.lower() == "quit":
         quit_game()
 
-    elif start.lower() == "start":
+    elif player_input.lower() == "start":
         main_menu = False
         display_intro = True
         game_running = True
 
     else:
-        print_c_str_nl("Action entered is invalid, Try again!")
+        action_invalid()
 
-    # Main Game Loop -
+# Main Game Loop -
 while game_running:
 
     # Game Intro -
@@ -172,33 +175,25 @@ while game_running:
         for line in textwrap.wrap("Ahead of you, a peaceful river meanders through the valley, its clear waters reflecting the soft glow of the sky. The banks are lined with tall, sturdy trees, creating a quiet rhythm with every whisper of wind. In the distance, mountains pierce the sky with snow-capped peaks, while their lower slopes are covered in a blanket of pine trees.", width=96):
             print(f"║ {line.center(96)} ║")
 
-        print_c_str(f"{bot_left}{top_bot*98}{bot_right}")
-        print()
+        print_c_str_nl(f"{bot_left}{top_bot*98}{bot_right}")
 
         print_c_str_nl(
             "Your pockets feel empty, and you only have the clothes on your back. What do you choose to do?")
 
+        player_input = input()
         game_start = False
-
-    if game_start == False:
-        print_c_str_nl("What would you like to do next?: ")
-    player_input = input()
-
 
 # Quit Game -
     if player_input.lower() == "quit":
         quit_game()
 
-
 # Open Controls Menu -
     elif player_input.lower() == "controls":
         ctrs_menu()
 
-
 # Open Bag -
     elif player_input.lower() == "bag":
         open_bag()
-
 
 # Wood Chop -
     elif player_input.lower() == "chop":
@@ -275,7 +270,6 @@ while game_running:
 
                     print_c_str_nl(
                         f"You found a fallen tree and managed to break off a chunk. You now have {plr_inv.get('Logs')} Logs.")
-
 
 # Mine -
     elif player_input.lower() == "mine":
@@ -388,29 +382,27 @@ while game_running:
             print_c_str_nl("You require a Pickaxe to mine rocks")
             game_mine = False
 
-
 # Craft -
     elif player_input.lower() == "craft":
         pass
-
 
 # Smelt -
     elif player_input.lower() == "smelt":
         pass
 
-
 # Invalid Action -
     else:
-        print_c_str_nl("Action entered is invalid, Try again!")
+        action_invalid()
         print_c_str_nl(
             "Type [Controls] if you want to see actions you can perform.")
 
+# Next Action -
+    if game_start == False:
+        print_c_str_nl("What would you like to do next?: ")
+        player_input = input()
 
-# TODO - Planning -
 
-
-# Mine Rock w (pick required) chance to get stone coal, if stone pick, chance to get iron
-# If iron pick chance to get gold
+# Planning -
 
 # Crafting - Only show craft option if inventory has required materials.
 # Plank 2 -1 log
@@ -425,7 +417,6 @@ while game_running:
 
 # 30 durability
 # Iron pick
-
 
 # Smelting
 # Iron, 2iron ore 1 coal
