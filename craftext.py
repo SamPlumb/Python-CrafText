@@ -3,7 +3,6 @@ import textwrap
 import random
 
 # TODO - finish mining
-# TODO - update chop to be written like mining
 # TODO - do crafting, smelting
 
 
@@ -50,7 +49,7 @@ plr_inv = {"Logs": 0,
            "Wooden Pickaxe": 1,
            "Stone Pickaxe": 1,
            "Iron Pickaxe": 1,
-           "Stone Axe": 1}
+           "Stone Axe": 0}
 
 # Controls list -
 ctrs_list = ["Controls / Player Choices",
@@ -147,7 +146,7 @@ while main_menu:
         game_running = True
 
     else:
-        print_in_box("Action entered is invalid, Try again!")
+        print_in_box("Answer Invalid, Try again!")
 
 # Main Game Loop -
 while game_running:
@@ -182,13 +181,11 @@ while game_running:
 
 # Wood Chop -
     elif player_input.lower() == "chop":
-
         game_chop = True
 
-        while game_chop:
-
-            # If player has stone axe
-            if plr_inv.get("Stone Axe") > 0:
+    # If player has stone axe
+        if game_chop:
+            while plr_inv.get("Stone Axe") >= 1:
 
                 print_c_str_nl(
                     "Would you like to use your Stone Axe? (Yes/No): ")
@@ -197,64 +194,73 @@ while game_running:
                 if player_input.lower() == "quit":
                     quit_game()
 
-    # Player uses Stone Axe
                 elif player_input.lower() == "yes":
 
                     game_chop = False
-
                     qty_added = random.randint(2, 3)
                     plr_inv["Logs"] += qty_added
 
-                    print_c_str_nl(
-                        f"You used your Stone Axe to chop down a tree got {qty_added} Logs. You now have {plr_inv.get('Logs')} Logs.")
+                    print_in_box(
+                        f"You used your Stone Axe to chop down a tree got {qty_added} Logs.")
+                    print_in_box(f"You now have {plr_inv.get('Logs')} Logs.")
 
-    # Player doesn't use Stone Axe
+                    break
+
                 elif player_input.lower() == "no":
 
                     game_chop = False
                     qty_added = random.randint(0, 1)
 
-                    print_c_str_nl(
+                    print_in_box(
                         "You chose to try to chop a tree without the Axe from your bag... ")
 
-    # Failed to get Log w Fist (Have Stone Axe)
+                # Failed to get Log w Fist (Have Stone Axe)
                     if qty_added == 0:
 
-                        print_c_str_nl(
-                            f"You punched a tree as hard as you could but nothing broke loose. You still have {plr_inv.get('Logs')} Logs.")
+                        print_in_box(
+                            f"You punched a tree as hard as you could but nothing broke loose.")
+                        print_in_box(
+                            f"You still have {plr_inv.get('Logs')} Logs.")
 
-    # Gain Log w Fist (Have Stone Axe)
+                # Gain Log w Fist (Have Stone Axe)
                     else:
 
                         plr_inv["Logs"] += qty_added
 
-                        print_c_str_nl(
-                            f"You shook the tree as hard as you could and a branch fell off. You now have {plr_inv.get('Logs')} Logs.")
+                        print_in_box(
+                            f"You shook the tree as hard as you could and a branch fell off.")
+                        print_in_box(
+                            f"You now have {plr_inv.get('Logs')} Logs.")
+                
+                    break
 
-     # If player entered incorrect answer
+            # If player entered incorrect answer
                 else:
-
                     print_in_box("Answer MUST be either Yes or No, Try Again!")
 
     # If player doesn't have an Axe
-            elif plr_inv.get("Stone Axe") == 0:
+        if game_chop:
+            if plr_inv.get("Stone Axe") == 0:
 
                 game_chop = False
                 qty_added = random.randint(0, 1)
 
-    # Failed to get Log w Fist
+        # Failed to get Log w Fist
                 if qty_added == 0:
 
-                    print_c_str_nl(
-                        f"You tried to karate chop the tree but, you didn't even make a dent. You still have {plr_inv.get('Logs')} Logs and a bruised hand")
+                    print_in_box(
+                        f"You tried to karate chop the tree but, you didn't even make a dent.")
+                    print_in_box(
+                        f"You still have {plr_inv.get('Logs')} Logs and bruised your hand")
 
-    # Gain Log w fist
+        # Gain Log w fist
                 else:
 
                     plr_inv["Logs"] += qty_added
 
-                    print_c_str_nl(
-                        f"You found a fallen tree and managed to break off a chunk. You now have {plr_inv.get('Logs')} Logs.")
+                    print_in_box(
+                        f"You found a fallen tree and managed to break off a chunk.")
+                    print_in_box(f"You now have {plr_inv.get('Logs')} Logs.")
 
 # Mine -
     elif player_input.lower() == "mine":
@@ -408,7 +414,7 @@ while game_running:
 # Invalid Action -
     else:
 
-        print_in_box("Action entered is invalid, Try again!")
+        print_in_box(f"{player_input} is not an action, Try again!")
         print_c_str_nl(
             "Type [Controls] if you want to see actions you can perform.")
 
