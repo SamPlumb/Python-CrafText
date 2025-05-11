@@ -1,10 +1,8 @@
 import time
 import textwrap
 import random
-import math
 
-# TODO - finish mining
-# TODO - do crafting, smelting
+# TODO - smelting
 # TODO - flavour text on using a tool for first time
 
 
@@ -12,6 +10,7 @@ import math
 
 # Variables -
 char_len_of_ctrs = []
+craft_char_len_of_ctrs = []
 qty_added = 0
 type_added = 0
 
@@ -59,18 +58,31 @@ plr_inv = {"Logs": 5,
 # Controls list -
 ctrs_list = ["Controls / Player Choices",
              " ",
-             "[controls] - Open this menu (Controls / Player Choices)",
+             "[Quit] - Closes the game",
+             "[Controls] - Open this menu (Controls / Player Choices)",
              "[Chop] - Chop down a tree.",
              "[Mine] - Mine rock with chance to find stone or minerals.",
              "[Craft] - Open crafting menu.",
              "[Smelt] - Open smelting menu.",
-             "[Bag] - See what items you have."]
+             "[Bag] - See what items you have."
+             ]
+
+craft_ctrs_list = ["Craft Options",
+                   "",
+                   "[Quit] - Closes the game",
+                   "[None] - Closes crafting menu",
+                   "[Item Name] - type the name of the item you wish to craft, eg. [Wooden Pickaxe]"
+                   ]
 
 
 # Find length of all the controls in list to create box around them
 for ctr in ctrs_list:
     char_len_of_ctrs.append(len(ctr))
-width_ctrs = max(char_len_of_ctrs)
+ctrs_width_ctrs = max(char_len_of_ctrs)
+
+for ctr in craft_ctrs_list:
+    craft_char_len_of_ctrs.append(len(ctr))
+craft_ctrs_width_ctrs = max(craft_char_len_of_ctrs)
 
 
 # Functions -
@@ -99,18 +111,13 @@ def print_in_box(text: str):
 
 
 # Control Menu - with dynamic box around
-def ctrs_menu():
-    print_c_str(f"{top_left}{top_bot*(width_ctrs+2)}{top_right}")
+def ctrs_menu(ctr_list, width):
+    print_c_str(f"{top_left}{top_bot*(width+2)}{top_right}")
 
-    for ctrs in ctrs_list:
-        print_c_str(f"║ {ctrs:^{width_ctrs}} ║")
+    for ctrs in ctr_list:
+        print_c_str(f"║ {ctrs:^{width}} ║")
 
-    print_c_str_nl(f"{bot_left}{top_bot*(width_ctrs+2)}{bot_right}")
-
-
-# Main Menu Text -
-def main_menu_txt():
-    print_in_box("Welcome To CrafText")
+    print_c_str_nl(f"{bot_left}{top_bot*(width+2)}{bot_right}")
 
 
 # Quit Game - Text w box around, 5 second sleep before window closes.
@@ -134,8 +141,8 @@ def open_bag():
 while main_menu:
 
     if display_intro == True:
-        main_menu_txt()
-        ctrs_menu()
+        print_in_box("Welcome To CrafText")
+        ctrs_menu(ctrs_list, ctrs_width_ctrs)
         print()
         display_intro = False
 
@@ -178,7 +185,7 @@ while game_running:
 
 # Open Controls Menu -
     elif player_input.lower() == "controls":
-        ctrs_menu()
+        ctrs_menu(ctrs_list, ctrs_width_ctrs)
 
 # Open Bag -
     elif player_input.lower() == "bag":
@@ -488,86 +495,338 @@ while game_running:
 # Craft -
     elif player_input.lower() == "craft":
         game_craft = True
-        #     print_c_str(f"{top_left}{top_bot*22}{top_right}")
 
-        #     for itm, qty in plr_inv.items():
-        #         if qty > 0:
-        #             print_c_str(f"║ {itm:15}: {qty:3} ║")
-
-        # print_c_str_nl(f"{bot_left}{top_bot*22}{bot_right}")
-
-        print_c_str(f"{top_left}{top_bot*55}{top_right}")
+        print_c_str(f"{top_left}{top_bot*56}{top_right}")
 
         if plr_inv.get("Logs") >= 1:
-            print_c_str(f"║{' ':55}║")
-            print_c_str(f"║ {'1 Log':^25}-> {'2 Planks':^25} ║")
-            print_c_str(f"║ {'1 Log':^25}-> {'4 Sticks':^25} ║")
+            print_c_str(f"║{' ':56}║")
+            print_c_str(f"║ {'1 Log':^25} -> {'2 Planks':^25} ║")
+            print_c_str(f"║ {'1 Log':^25} -> {'4 Sticks':^25} ║")
 
         if plr_inv.get("Planks") >= 3 and plr_inv.get("Sticks") >= 2:
-            print_c_str(f"║{' ':55}║")
+            print_c_str(f"║{' ':56}║")
             print_c_str(
-                f"║ {'2x Sticks, 3x Planks':^25}-> {'1 Wooden Pickaxe':^25} ║")
+                f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Pickaxe':^25} ║")
             print_c_str(
-                f"║ {'2x Sticks, 3x Planks':^25}-> {'1 Wooden Axe':^25} ║")
+                f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Axe':^25} ║")
 
         if plr_inv.get("Stone") >= 3 and plr_inv.get("Sticks") >= 2:
-            print_c_str(f"║{' ':55}║")
+            print_c_str(f"║{' ':56}║")
             print_c_str(
-                f"║ {'2x Sticks, 3x Stone':^25}-> {'1 Stone Pickaxe':^25} ║")
+                f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Pickaxe':^25} ║")
             print_c_str(
-                f"║ {'2x Sticks, 3x Stone':^25}-> {'1 Stone Axe':^25} ║")
+                f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Axe':^25} ║")
 
         if plr_inv.get("Iron Ingot") >= 3 and plr_inv.get("Sticks") >= 2:
-            print_c_str(f"║{' ':55}║")
+            print_c_str(f"║{' ':56}║")
             print_c_str(
-                f"║ {'2x Sticks, 3x Iron Ingots':^25}-> {'1 Iron Pickaxe':^25} ║")
-            # print_c_str(f"║ {'2x Sticks, 3x Iron Ingots':^25}-> {'1 Iron Axe':^25} ║")
+                f"║ {'2x Sticks, 3x Iron Ingots':^25} -> {'1 Iron Pickaxe':^25} ║")
 
-        print_c_str(f"║{' ':55}║")
-        print_c_str_nl(f"{bot_left}{top_bot*55}{bot_right}")
+        print_c_str(f"║{' ':56}║")
+        print_c_str_nl(f"{bot_left}{top_bot*56}{bot_right}")
 
         while game_craft:
             print_c_str_nl("What would you like to craft?: ")
             player_input = input()
 
-            if player_input.lower == "quit":
+            if player_input.lower() == "quit":
                 quit_game()
 
-            elif player_input.lower == "none":
+            elif player_input.lower() == "none":
                 game_craft = False
                 break
 
-            elif player_input.lower == "craft controls":
-                game_craft = False
-                break
+            elif player_input.lower() == "craft controls":
+                ctrs_menu(craft_ctrs_list, craft_ctrs_width_ctrs)
 
-            elif player_input.lower == "planks":
-                game_craft = False
-                break
+            elif player_input.lower() == "planks":
 
-            elif player_input.lower == "sticks":
-                game_craft = False
-                break
+                max_craft = plr_inv.get('Logs')
 
-            elif player_input.lower == "wooden pickaxe":
-                game_craft = False
-                break
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Logs':^30} : {plr_inv.get('Logs'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Planks Recipe:':^40}║")
+                print_c_str(f"║{'1x Log -> 2x Planks':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
 
-            elif player_input.lower == "wooden axe":
-                game_craft = False
-                break
+                while game_craft:
 
-            elif player_input.lower == "stone pickaxe":
-                game_craft = False
-                break
+                    print_c_str_nl(
+                        f"How many logs would you like to use (1 - {max_craft}?): ")
+                    player_input = input()
 
-            elif player_input.lower == "stone axe":
-                game_craft = False
-                break
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_craft}.")
 
-            elif player_input.lower == "iron pickaxe":
-                game_craft = False
-                break
+                    elif 1 <= int(player_input) <= max_craft:
+                        plr_inv["Logs"] -= int(player_input)
+                        plr_inv["Planks"] += (int(player_input*2))
+
+                        print_in_box(
+                            f"You crafted {int(player_input)*2} Planks.")
+                        print_in_box(f"You have {plr_inv['Logs']} Logs left.")
+
+                        game_craft = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
+
+            elif player_input.lower() == "sticks":
+
+                max_craft = plr_inv.get('Logs')
+
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Logs':^30} : {plr_inv.get('Logs'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Sticks Recipe:':^40}║")
+                print_c_str(f"║{'1x Log -> 4x Sticks':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
+
+                while game_craft:
+
+                    print_c_str_nl(
+                        f"How many logs would you like to use (1 - {max_craft}?): ")
+                    player_input = input()
+
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_craft}.")
+
+                    elif 1 <= int(player_input) <= max_craft:
+                        plr_inv["Logs"] -= int(player_input)
+                        plr_inv["Sticks"] += (int(player_input)*4)
+
+                        print_in_box(
+                            f"You crafted {int(player_input)*4} Sticks.")
+                        print_in_box(f"You have {plr_inv['Logs']} Logs left.")
+
+                        game_craft = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
+
+            elif player_input.lower() == "wooden pickaxe":
+
+                max_craft = min((int(plr_inv.get('Planks')/3)),
+                                (int(plr_inv.get('Sticks')/2)))
+
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Planks':^30} : {plr_inv.get('Planks'):^5} ║")
+                print_c_str(
+                    f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Wooden Pickaxe Recipe:':^40}║")
+                print_c_str(
+                    f"║{'2x Sticks, 3x Planks -> Wooden Pickaxe':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
+
+                while game_craft:
+
+                    print_c_str_nl(
+                        f"How many Wooden Pickaxe would you like to craft (1 - {max_craft})?: ")
+                    player_input = input()
+
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_craft}.")
+
+                    elif 1 <= int(player_input) <= max_craft:
+                        plr_inv["Planks"] -= (int(player_input)*3)
+                        plr_inv["Sticks"] -= (int(player_input)*2)
+                        plr_inv["Wooden Pickaxe"] += (int(player_input))
+
+                        print_in_box(
+                            f"You crafted {int(player_input)} Wooden Pickaxe.")
+                        print_in_box(
+                            f"You have {plr_inv['Planks']} Planks and {plr_inv['Sticks']} Sticks left.")
+
+                        game_craft = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
+
+            elif player_input.lower() == "wooden axe":
+                
+                max_craft = min((int(plr_inv.get('Planks')/3)),
+                                (int(plr_inv.get('Sticks')/2)))
+
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Planks':^30} : {plr_inv.get('Planks'):^5} ║")
+                print_c_str(
+                    f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Wooden Axe Recipe:':^40}║")
+                print_c_str(
+                    f"║{'2x Sticks, 3x Planks -> Wooden Axe':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
+
+                while game_craft:
+
+                    print_c_str_nl(
+                        f"How many Wooden Axe would you like to craft (1 - {max_craft})?: ")
+                    player_input = input()
+
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_craft}.")
+
+                    elif 1 <= int(player_input) <= max_craft:
+                        plr_inv["Planks"] -= (int(player_input)*3)
+                        plr_inv["Sticks"] -= (int(player_input)*2)
+                        plr_inv["Wooden Axe"] += (int(player_input))
+
+                        print_in_box(
+                            f"You crafted {int(player_input)} Wooden Axe.")
+                        print_in_box(
+                            f"You have {plr_inv['Planks']} Planks and {plr_inv['Sticks']} Sticks left.")
+
+                        game_craft = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
+
+            elif player_input.lower() == "stone pickaxe":
+
+                max_craft = min((int(plr_inv.get('Stone')/3)),
+                                (int(plr_inv.get('Sticks')/2)))
+
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Stone':^30} : {plr_inv.get('Stone'):^5} ║")
+                print_c_str(
+                    f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Stone Pickaxe Recipe:':^40}║")
+                print_c_str(
+                    f"║{'2x Sticks, 3x Stone -> Stone Pickaxe':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
+
+                while game_craft:
+
+                    print_c_str_nl(
+                        f"How many Stone Pickaxe would you like to craft (1 - {max_craft})?: ")
+                    player_input = input()
+
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_craft}.")
+
+                    elif 1 <= int(player_input) <= max_craft:
+                        plr_inv["Stone"] -= (int(player_input)*3)
+                        plr_inv["Sticks"] -= (int(player_input)*2)
+                        plr_inv["Stone Pickaxe"] += (int(player_input))
+
+                        print_in_box(
+                            f"You crafted {int(player_input)} Stone Pickaxe.")
+                        print_in_box(
+                            f"You have {plr_inv['Stone']} Stone and {plr_inv['Sticks']} Sticks left.")
+
+                        game_craft = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
+
+            elif player_input.lower() == "stone axe":
+                
+                max_craft = min((int(plr_inv.get('Stone')/3)),
+                                (int(plr_inv.get('Sticks')/2)))
+
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Stone':^30} : {plr_inv.get('Stone'):^5} ║")
+                print_c_str(
+                    f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Stone Axe Recipe:':^40}║")
+                print_c_str(
+                    f"║{'2x Sticks, 3x Stone -> Stone Axe':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
+
+                while game_craft:
+
+                    print_c_str_nl(
+                        f"How many Stone Axe would you like to craft (1 - {max_craft})?: ")
+                    player_input = input()
+
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_craft}.")
+
+                    elif 1 <= int(player_input) <= max_craft:
+                        plr_inv["Stone"] -= (int(player_input)*3)
+                        plr_inv["Sticks"] -= (int(player_input)*2)
+                        plr_inv["Stone Axe"] += (int(player_input))
+
+                        print_in_box(
+                            f"You crafted {int(player_input)} Stone Axe.")
+                        print_in_box(
+                            f"You have {plr_inv['Stone']} Stone and {plr_inv['Sticks']} Sticks left.")
+
+                        game_craft = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
+
+            elif player_input.lower() == "iron pickaxe":
+                
+                max_craft = min((int(plr_inv.get('Iron Ingot')/3)),
+                                (int(plr_inv.get('Sticks')/2)))
+
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Iron Ingots':^30} : {plr_inv.get('Iron Ingot'):^5} ║")
+                print_c_str(
+                    f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Iron Pickaxe Recipe:':^40}║")
+                print_c_str(
+                    f"║{'2x Sticks, 3x Iron Ingot -> Iron Pickaxe':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
+
+                while game_craft:
+
+                    print_c_str_nl(
+                        f"How many Pickaxe would you like to craft (1 - {max_craft})?: ")
+                    player_input = input()
+
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_craft}.")
+
+                    elif 1 <= int(player_input) <= max_craft:
+                        plr_inv["Iron Ingot"] -= (int(player_input)*3)
+                        plr_inv["Sticks"] -= (int(player_input)*2)
+                        plr_inv["Iron Pickaxe"] += (int(player_input))
+
+                        print_in_box(
+                            f"You crafted {int(player_input)} Iron Pickaxe.")
+                        print_in_box(
+                            f"You have {plr_inv['Iron Ingot']} Iron Ingots and {plr_inv['Sticks']} Sticks left.")
+
+                        game_craft = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
 
             # elif player_input.lower == "iron axe":
             #     pass
@@ -600,9 +859,6 @@ while game_running:
 
 # Planning -
 
-# Crafting - Only show craft option if inventory has required materials.
-# Plank 2 -1 log
-# Stick 4 -1 log
 
 # Wood pick 10 durability, 2 stick, 3 plank
 # Gold star 5 gold win    continue playing, new game, quit.
