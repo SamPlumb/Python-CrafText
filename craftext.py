@@ -4,6 +4,7 @@ import random
 
 # TODO - finish mining
 # TODO - do crafting, smelting
+# TODO - flavour text on using a tool for first time 
 
 
 # CrafText -
@@ -295,7 +296,7 @@ while game_running:
     # Mine w Iron Pickaxe -
         if game_mine:
             while plr_inv.get("Iron Pickaxe") >= 1:
-                # TODO ADD FLAVOUR TEXT DIGGING DEEPER (maybe hotter?)
+
                 print_c_str_nl(
                     "Would you like to use your Iron Pickaxe to mine? (Yes/No): ")
                 player_input = input()
@@ -307,6 +308,9 @@ while game_running:
 
                     game_mine = False
                     type_added = random.randint(1, 10)
+
+            # TODO - First craft flavour text (implement with crafting)
+                    print_in_box("Your Pickaxe carves though rock like butter enabling you to dig deeper and deeper")
 
         # Gain Stone w Iron Pickaxe
                     if 1 <= type_added <= 2:
@@ -371,12 +375,16 @@ while game_running:
                     quit_game()
 
                 elif player_input.lower() == "yes":
-                    # TODO - Add some more flavour text, digging deeper
+                    
                     game_mine = False
                     type_added = random.randint(1, 10)
 
+            #TODO first craft flavour text (fix when implemented crafting)
+                    print_in_box("Your Stone Pickaxe cuts though the rock easier enabling you to dig deeper into the earth.")
+                    print_in_box("You may potentially find better minerals.")
+
         # Gain Stone w Stone Pickaxe
-                    if 1 <= type_added <= 4:
+                    if 1 <= type_added <= 3:
                         qty_added = random.randint(1, 3)
                         plr_inv["Stone"] += qty_added
 
@@ -386,7 +394,7 @@ while game_running:
                             f"You now have {plr_inv.get('Stone')} Stone.")
 
         # Gain Coal w Stone Pickaxe
-                    elif 5 <= type_added <= 7:
+                    elif 4 <= type_added <= 7:
 
                         qty_added = random.randint(1, 2)
                         plr_inv["Coal"] += qty_added
@@ -398,8 +406,8 @@ while game_running:
 
         # Gain Iron Ore w Stone Pickaxe
                     else:
-
-                        plr_inv["Iron Ore"] += 1
+                        qty_added = 1
+                        plr_inv["Iron Ore"] += qty_added
 
                         print_in_box(
                             f"After hours of no luck, a small redish silver rock broke off the wall. You gained {qty_added} Iron Ore.")
@@ -415,7 +423,6 @@ while game_running:
                     print_in_box("Answer MUST be either Yes or No, Try Again!")
 
     # Mine w Wooden Pickaxe
-# TODO - Finish this
         if game_mine:
             while plr_inv.get("Wooden Pickaxe") >= 1:
 
@@ -427,11 +434,39 @@ while game_running:
                     quit_game()
 
                 elif player_input.lower() == "yes":
-
+        # TODO - Add flavour text on first craft
                     game_mine = False
-                    print(1)
-                    break
+                    type_added = random.randint(1, 10)
 
+        # Gain Stone w Wooden Pickaxe
+                    if 1 <= type_added <= 5:
+                        qty_added = 1
+                        plr_inv["Stone"] += qty_added
+
+                        print_in_box(
+                            f"You hit the same piece of rock over and over again, finally a chunk split off")
+                        print_in_box(
+                            f"You gained {qty_added} Stone, You now have {plr_inv.get('Stone')} Stone.")
+
+        # Gain Coal w Wooden Pickaxe
+                    elif type_added == 6:
+
+                        qty_added = 1
+                        plr_inv["Coal"] += qty_added
+
+                        print_in_box(
+                            "You found a black rock while mining, It seemed different to other rocks so held onto it for safe keeping.")
+                        print_in_box(
+                            f"You found {qty_added} Coal. You now have {plr_inv.get('Coal')} Coal.")
+
+        # Fail w Wooden Pickaxe      
+                    else:
+                        print_in_box(
+                            "You swung your Wooden Pickaxe and it bounced back, the rock seemed unfazed.")
+                        print_in_box("You found nothing. Better Luck next time.")
+
+                    break
+                        
                 elif player_input.lower() == "no":
                     break
 
