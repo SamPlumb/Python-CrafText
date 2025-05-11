@@ -2,9 +2,13 @@ import time
 import textwrap
 import random
 
-# TODO - smelting
 # TODO - flavour text on using a tool for first time
+# TODO - Add functionality to Gold statue
 
+# TODO - Durability
+# Wood pick 10 durability
+# 20 durability - Stone axe  Stone pickaxe
+# Iron pick - 30 durability
 
 # CrafText -
 
@@ -52,7 +56,7 @@ plr_inv = {"Logs": 5,
            "Iron Pickaxe": 1,
            "Stone Axe": 1,
            "Wooden Axe": 1,
-           "Golden Statue": 1}
+           "Gold Statue": 1}
 
 
 # Controls list -
@@ -67,11 +71,11 @@ ctrs_list = ["Controls / Player Choices",
              "[Bag] - See what items you have."
              ]
 
-craft_ctrs_list = ["Craft Options",
+craft_ctrs_list = ["Craft/Smelt Options",
                    "",
                    "[Quit] - Closes the game",
-                   "[None] - Closes crafting menu",
-                   "[Item Name] - type the name of the item you wish to craft, eg. [Wooden Pickaxe]"
+                   "[None] - Closes crafting/smelt menu",
+                   "[Item Name] - type the name of the item you wish to craft/smelt, eg. [Wooden Pickaxe]"
                    ]
 
 
@@ -522,6 +526,11 @@ while game_running:
             print_c_str(
                 f"║ {'2x Sticks, 3x Iron Ingots':^25} -> {'1 Iron Pickaxe':^25} ║")
 
+        if plr_inv.get("Gold") >= 5:
+            print_c_str(f"║{' ':56}║")
+            print_c_str(
+                f"║ {'5x Gold':^25} -> {'1 Gold Statue':^25} ║")
+
         print_c_str(f"║{' ':56}║")
         print_c_str_nl(f"{bot_left}{top_bot*56}{bot_right}")
 
@@ -554,7 +563,7 @@ while game_running:
                 while game_craft:
 
                     print_c_str_nl(
-                        f"How many logs would you like to use (1 - {max_craft}?): ")
+                        f"How many logs would you like to use (1 - {max_craft})?: ")
                     player_input = input()
 
                     if not player_input.isdigit():
@@ -657,7 +666,7 @@ while game_running:
                             f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
 
             elif player_input.lower() == "wooden axe":
-                
+
                 max_craft = min((int(plr_inv.get('Planks')/3)),
                                 (int(plr_inv.get('Sticks')/2)))
 
@@ -743,7 +752,7 @@ while game_running:
                             f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
 
             elif player_input.lower() == "stone axe":
-                
+
                 max_craft = min((int(plr_inv.get('Stone')/3)),
                                 (int(plr_inv.get('Sticks')/2)))
 
@@ -786,7 +795,7 @@ while game_running:
                             f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
 
             elif player_input.lower() == "iron pickaxe":
-                
+
                 max_craft = min((int(plr_inv.get('Iron Ingot')/3)),
                                 (int(plr_inv.get('Sticks')/2)))
 
@@ -828,21 +837,172 @@ while game_running:
                         print_in_box(
                             f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
 
+            elif player_input.lower() == "gold statue":
+
+                max_craft = (int(plr_inv.get('Gold')/5))
+
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Gold':^30} : {plr_inv.get('Gold'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Gold Statue Recipe:':^40}║")
+                print_c_str(f"║{'5x Gold -> 1x Gold Statue':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
+
+                while game_craft:
+
+                    print_c_str_nl(
+                        f"How many Gold Statues would you like to craft (1 - {max_craft})?: ")
+                    player_input = input()
+
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_craft}.")
+
+                    elif 1 <= int(player_input) <= max_craft:
+                        plr_inv["Gold"] -= (int(player_input)*5)
+                        plr_inv["Gold Statue"] += int(player_input)
+
+                        print_in_box(
+                            f"You crafted {int(player_input)} Gold Statues.")
+                        print_in_box(f"You have {plr_inv['Gold']} Gold left.")
+
+                        game_craft = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_craft}, Try again!")
+
             # elif player_input.lower == "iron axe":
             #     pass
 
             else:
-                print_in_box(f"{player_input} is not an action, Try again!")
+                print_in_box(
+                    f"{player_input} is not a valid action, Try again!")
                 print_in_box(
                     "Type [Craft Controls] if you want to see actions you can perform.")
 
-        # print_c_str(f"║ {'Total logs':^12}:  {logs:^12} ║")
-        # print_c_str(f"║ {'-'*27:^24} ║")
-        # print_c_str(f"║ {'1 Log -> 2 Planks':20}: {math.floor(logs / 2):3} ║")
-
 # Smelt -
     elif player_input.lower() == "smelt":
-        pass
+
+        game_smelt = True
+
+        print_c_str(f"{top_left}{top_bot*56}{top_right}")
+
+        if plr_inv.get("Logs") >= 4:
+            print_c_str(f"║{' ':56}║")
+            print_c_str(f"║ {'4 Log':^25} -> {'1 Coal':^25} ║")
+
+        if plr_inv.get("Coal") >= 3 and plr_inv.get("Iron Ore") >= 1:
+            print_c_str(f"║{' ':56}║")
+            print_c_str(
+                f"║ {'1x Iron Ore, 3x Coal':^25} -> {'1 Iron Ingot':^25} ║")
+
+        print_c_str(f"║{' ':56}║")
+        print_c_str_nl(f"{bot_left}{top_bot*56}{bot_right}")
+
+        while game_smelt:
+            print_c_str_nl("What would you like to smelt?: ")
+            player_input = input()
+
+            if player_input.lower() == "quit":
+                quit_game()
+
+            elif player_input.lower() == "none":
+                game_smelt = False
+                break
+
+            elif player_input.lower() == "smelt controls":
+                ctrs_menu(craft_ctrs_list, craft_ctrs_width_ctrs)
+
+            elif player_input.lower() == "iron ingot":
+
+                max_smelt = min((int(plr_inv.get('Iron Ore'))),
+                                (int(plr_inv.get('Coal')/3)))
+
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Iron Ore':^30} : {plr_inv.get('Iron Ore'):^5} ║")
+                print_c_str(
+                    f"║ {'Total Coal':^30} : {plr_inv.get('Coal'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Iron Ingot Recipe:':^40}║")
+                print_c_str(
+                    f"║{'1x Iron Ore, 3x Coal -> Iron Ingots':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
+
+                while game_smelt:
+
+                    print_c_str_nl(
+                        f"How many Iron Ingots would you like to smelt (1 - {max_smelt})?: ")
+                    player_input = input()
+
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_smelt}.")
+
+                    elif 1 <= int(player_input) <= max_smelt:
+                        plr_inv["Iron Ore"] -= (int(player_input))
+                        plr_inv["Coal"] -= (int(player_input)*3)
+                        plr_inv["Iron Ingot"] += (int(player_input))
+
+                        print_in_box(
+                            f"You smelted {int(player_input)} Iron Ingots.")
+                        print_in_box(
+                            f"You have {plr_inv['Iron Ore']} Iron Ore and {plr_inv['Coal']} Coal left.")
+
+                        game_smelt = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_smelt}, Try again!")
+
+            elif player_input.lower() == "coal":
+
+                max_smelt = (int(plr_inv.get('Logs')/4))
+
+                print_c_str(f"{top_left}{top_bot*40}{top_right}")
+                print_c_str(
+                    f"║ {'Total Logs':^30} : {plr_inv.get('Logs'):^5} ║")
+                print_c_str(f"║{' ':^40}║")
+                print_c_str(f"║{'Coal Recipe:':^40}║")
+                print_c_str(f"║{'4x Log -> 1x Coal':^40}║")
+                print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
+
+                while game_smelt:
+
+                    print_c_str_nl(
+                        f"How much Coal would you like to smelt (1 - {max_smelt}?): ")
+                    player_input = input()
+
+                    if not player_input.isdigit():
+                        print_in_box(
+                            f"{player_input} is not a number, please enter a number between 1 and {max_smelt}.")
+
+                    elif 1 <= int(player_input) <= max_smelt:
+                        plr_inv["Logs"] -= (int(player_input)*3)
+                        plr_inv["Coal"] += int(player_input)
+
+                        print_in_box(
+                            f"You smelted {int(player_input)} Coal.")
+                        print_in_box(
+                            f"You have {plr_inv['Logs']} Logs left.")
+
+                        game_smelt = False
+                        break
+
+                    else:
+                        print_in_box(
+                            f"{player_input} is not an valid number between 1 and {max_smelt}, Try again!")
+
+            else:
+                print_in_box(
+                    f"{player_input} is not a valid action, Try again!")
+                print_in_box(
+                    "Type [Smelt Controls] if you want to see actions you can perform.")
+
 
 # Invalid Action -
     else:
@@ -855,24 +1015,3 @@ while game_running:
     if game_start == False:
         print_c_str_nl("What would you like to do next?: ")
         player_input = input()
-
-
-# Planning -
-
-
-# Wood pick 10 durability, 2 stick, 3 plank
-# Gold star 5 gold win    continue playing, new game, quit.
-
-# 20 durability
-# Stone axe, 2 stick, 3 stone
-# Stone pickaxe, 2 stick 3 stone
-
-# 30 durability
-# Iron pick
-
-# Smelting
-# Iron, 2iron ore 1 coal
-# Charcoal, 4 log
-
-
-# small chunk of silver and redish looking rock broke off.
