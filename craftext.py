@@ -1,10 +1,11 @@
 import time
 import textwrap
 import random
+import math
 
 # TODO - finish mining
 # TODO - do crafting, smelting
-# TODO - flavour text on using a tool for first time 
+# TODO - flavour text on using a tool for first time
 
 
 # CrafText -
@@ -39,19 +40,21 @@ bot_right = "╝"
 
 
 # Items Dict -
-plr_inv = {"Logs": 0,
-           "Planks": 0,
-           "Stick": 0,
-           "Stone": 0,
+plr_inv = {"Logs": 5,
+           "Planks": 10,
+           "Sticks": 10,
+           "Stone": 10,
            "Coal": 30,
-           "Iron Ore": 0,
-           "Iron Ingot": 0,
-           "Gold": 0,
+           "Iron Ore": 10,
+           "Iron Ingot": 10,
+           "Gold": 10,
            "Wooden Pickaxe": 1,
            "Stone Pickaxe": 1,
            "Iron Pickaxe": 1,
-           "Stone Axe": 0,
-           "Wooden Axe": 1}
+           "Stone Axe": 1,
+           "Wooden Axe": 1,
+           "Golden Statue": 1}
+
 
 # Controls list -
 ctrs_list = ["Controls / Player Choices",
@@ -310,7 +313,8 @@ while game_running:
                     type_added = random.randint(1, 10)
 
             # TODO - First craft flavour text (implement with crafting)
-                    print_in_box("Your Pickaxe carves though rock like butter enabling you to dig deeper and deeper")
+                    print_in_box(
+                        "Your Pickaxe carves though rock like butter enabling you to dig deeper and deeper")
 
         # Gain Stone w Iron Pickaxe
                     if 1 <= type_added <= 2:
@@ -375,12 +379,13 @@ while game_running:
                     quit_game()
 
                 elif player_input.lower() == "yes":
-                    
+
                     game_mine = False
                     type_added = random.randint(1, 10)
 
-            #TODO first craft flavour text (fix when implemented crafting)
-                    print_in_box("Your Stone Pickaxe cuts though the rock easier enabling you to dig deeper into the earth.")
+            # TODO first craft flavour text (fix when implemented crafting)
+                    print_in_box(
+                        "Your Stone Pickaxe cuts though the rock easier enabling you to dig deeper into the earth.")
                     print_in_box("You may potentially find better minerals.")
 
         # Gain Stone w Stone Pickaxe
@@ -434,7 +439,7 @@ while game_running:
                     quit_game()
 
                 elif player_input.lower() == "yes":
-        # TODO - Add flavour text on first craft
+                    # TODO - Add flavour text on first craft
                     game_mine = False
                     type_added = random.randint(1, 10)
 
@@ -459,14 +464,15 @@ while game_running:
                         print_in_box(
                             f"You found {qty_added} Coal. You now have {plr_inv.get('Coal')} Coal.")
 
-        # Fail w Wooden Pickaxe      
+        # Fail w Wooden Pickaxe
                     else:
                         print_in_box(
                             "You swung your Wooden Pickaxe and it bounced back, the rock seemed unfazed.")
-                        print_in_box("You found nothing. Better Luck next time.")
+                        print_in_box(
+                            "You found nothing. Better Luck next time.")
 
                     break
-                        
+
                 elif player_input.lower() == "no":
                     break
 
@@ -481,7 +487,99 @@ while game_running:
 
 # Craft -
     elif player_input.lower() == "craft":
-        pass
+        game_craft = True
+        #     print_c_str(f"{top_left}{top_bot*22}{top_right}")
+
+        #     for itm, qty in plr_inv.items():
+        #         if qty > 0:
+        #             print_c_str(f"║ {itm:15}: {qty:3} ║")
+
+        # print_c_str_nl(f"{bot_left}{top_bot*22}{bot_right}")
+
+        print_c_str(f"{top_left}{top_bot*55}{top_right}")
+
+        if plr_inv.get("Logs") >= 1:
+            print_c_str(f"║{' ':55}║")
+            print_c_str(f"║ {'1 Log':^25}-> {'2 Planks':^25} ║")
+            print_c_str(f"║ {'1 Log':^25}-> {'4 Sticks':^25} ║")
+
+        if plr_inv.get("Planks") >= 3 and plr_inv.get("Sticks") >= 2:
+            print_c_str(f"║{' ':55}║")
+            print_c_str(
+                f"║ {'2x Sticks, 3x Planks':^25}-> {'1 Wooden Pickaxe':^25} ║")
+            print_c_str(
+                f"║ {'2x Sticks, 3x Planks':^25}-> {'1 Wooden Axe':^25} ║")
+
+        if plr_inv.get("Stone") >= 3 and plr_inv.get("Sticks") >= 2:
+            print_c_str(f"║{' ':55}║")
+            print_c_str(
+                f"║ {'2x Sticks, 3x Stone':^25}-> {'1 Stone Pickaxe':^25} ║")
+            print_c_str(
+                f"║ {'2x Sticks, 3x Stone':^25}-> {'1 Stone Axe':^25} ║")
+
+        if plr_inv.get("Iron Ingot") >= 3 and plr_inv.get("Sticks") >= 2:
+            print_c_str(f"║{' ':55}║")
+            print_c_str(
+                f"║ {'2x Sticks, 3x Iron Ingots':^25}-> {'1 Iron Pickaxe':^25} ║")
+            # print_c_str(f"║ {'2x Sticks, 3x Iron Ingots':^25}-> {'1 Iron Axe':^25} ║")
+
+        print_c_str(f"║{' ':55}║")
+        print_c_str_nl(f"{bot_left}{top_bot*55}{bot_right}")
+
+        while game_craft:
+            print_c_str_nl("What would you like to craft?: ")
+            player_input = input()
+
+            if player_input.lower == "quit":
+                quit_game()
+
+            elif player_input.lower == "none":
+                game_craft = False
+                break
+
+            elif player_input.lower == "craft controls":
+                game_craft = False
+                break
+
+            elif player_input.lower == "planks":
+                game_craft = False
+                break
+
+            elif player_input.lower == "sticks":
+                game_craft = False
+                break
+
+            elif player_input.lower == "wooden pickaxe":
+                game_craft = False
+                break
+
+            elif player_input.lower == "wooden axe":
+                game_craft = False
+                break
+
+            elif player_input.lower == "stone pickaxe":
+                game_craft = False
+                break
+
+            elif player_input.lower == "stone axe":
+                game_craft = False
+                break
+
+            elif player_input.lower == "iron pickaxe":
+                game_craft = False
+                break
+
+            # elif player_input.lower == "iron axe":
+            #     pass
+
+            else:
+                print_in_box(f"{player_input} is not an action, Try again!")
+                print_in_box(
+                    "Type [Craft Controls] if you want to see actions you can perform.")
+
+        # print_c_str(f"║ {'Total logs':^12}:  {logs:^12} ║")
+        # print_c_str(f"║ {'-'*27:^24} ║")
+        # print_c_str(f"║ {'1 Log -> 2 Planks':20}: {math.floor(logs / 2):3} ║")
 
 # Smelt -
     elif player_input.lower() == "smelt":
