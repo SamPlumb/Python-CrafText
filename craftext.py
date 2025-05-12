@@ -2,7 +2,6 @@ import time
 import textwrap
 import random
 
-# TODO - flavour text on using a tool for first time
 # TODO - Add functionality to Gold statue
 
 # TODO - Durability
@@ -18,7 +17,6 @@ craft_char_len_of_ctrs = []
 qty_added = 0
 type_added = 0
 
-
 main_menu = True
 display_intro = True
 
@@ -29,6 +27,15 @@ game_chop = False
 game_mine = False
 game_craft = False
 game_smelt = False
+
+wood_pick_f_c = False
+stone_pick_f_c = False
+iron_pick_f_c = False
+
+wood_axe_f_c = False
+stone_axe_f_c = False
+
+bag_empty = True
 
 
 # Box Ascii -
@@ -41,23 +48,21 @@ top_right = "╗"
 bot_left = "╚"
 bot_right = "╝"
 
-
 # Items Dict -
-plr_inv = {"Logs": 5,
-           "Planks": 10,
-           "Sticks": 10,
-           "Stone": 10,
-           "Coal": 30,
-           "Iron Ore": 10,
-           "Iron Ingot": 10,
-           "Gold": 10,
-           "Wooden Pickaxe": 1,
-           "Stone Pickaxe": 1,
-           "Iron Pickaxe": 1,
-           "Stone Axe": 1,
-           "Wooden Axe": 1,
-           "Gold Statue": 1}
-
+plr_inv = {"Logs": 0,
+           "Planks": 0,
+           "Sticks": 0,
+           "Stone": 0,
+           "Coal": 0,
+           "Iron Ore": 0,
+           "Iron Ingot": 0,
+           "Gold": 0,
+           "Wooden Pickaxe": 0,
+           "Stone Pickaxe": 0,
+           "Iron Pickaxe": 0,
+           "Wooden Axe": 0,
+           "Stone Axe": 0,
+           "Gold Statue": 0}
 
 # Controls list -
 ctrs_list = ["Controls / Player Choices",
@@ -77,7 +82,6 @@ craft_ctrs_list = ["Craft/Smelt Options",
                    "[None] - Closes crafting/smelt menu",
                    "[Item Name] - type the name of the item you wish to craft/smelt, eg. [Wooden Pickaxe]"
                    ]
-
 
 # Find length of all the controls in list to create box around them
 for ctr in ctrs_list:
@@ -212,6 +216,12 @@ while game_running:
 
                 elif player_input.lower() == "yes":
 
+                    if stone_axe_f_c:
+
+                        print_in_box("This new Axe is sure to fell a tree in no time!")
+
+                        stone_axe_f_c = False
+
                     game_chop = False
                     qty_added = random.randint(2, 3)
                     plr_inv["Logs"] += qty_added
@@ -240,6 +250,12 @@ while game_running:
                     quit_game()
 
                 elif player_input.lower() == "yes":
+                    
+                    if wood_axe_f_c:
+
+                        print_in_box("It will chop down a tree, won't it? Save my hands from punching a tree at least...")
+
+                        wood_axe_f_c = False
 
                     game_chop = False
                     qty_added = random.randint(1, 2)
@@ -323,9 +339,12 @@ while game_running:
                     game_mine = False
                     type_added = random.randint(1, 10)
 
-            # TODO - First craft flavour text (implement with crafting)
-                    print_in_box(
-                        "Your Pickaxe carves though rock like butter enabling you to dig deeper and deeper")
+                    if iron_pick_f_c:
+                        
+                        print_in_box(
+                            "Your new pickaxe carves though rock like butter enabling you to dig deeper and deeper")
+                        
+                        iron_pick_f_c = False
 
         # Gain Stone w Iron Pickaxe
                     if 1 <= type_added <= 2:
@@ -391,13 +410,17 @@ while game_running:
 
                 elif player_input.lower() == "yes":
 
+                    if stone_pick_f_c:
+                        
+                        print_in_box(
+                        "Your new Stone Pickaxe cuts though the rock easier enabling you to dig deeper into the earth.")
+                        print_in_box(
+                            "You may potentially find better minerals.")
+                        
+                        stone_pick_f_c = False
+
                     game_mine = False
                     type_added = random.randint(1, 10)
-
-            # TODO first craft flavour text (fix when implemented crafting)
-                    print_in_box(
-                        "Your Stone Pickaxe cuts though the rock easier enabling you to dig deeper into the earth.")
-                    print_in_box("You may potentially find better minerals.")
 
         # Gain Stone w Stone Pickaxe
                     if 1 <= type_added <= 3:
@@ -450,7 +473,12 @@ while game_running:
                     quit_game()
 
                 elif player_input.lower() == "yes":
-                    # TODO - Add flavour text on first craft
+                    
+                    if wood_pick_f_c:
+                        
+                        print_in_box("You get your freshly made pickaxe from your bag and head to the mountains for the first time.")
+                        wood_pick_f_c = False
+
                     game_mine = False
                     type_added = random.randint(1, 10)
 
@@ -499,6 +527,7 @@ while game_running:
 # Craft -
     elif player_input.lower() == "craft":
         game_craft = True
+        bag_empty = True
 
         print_c_str(f"{top_left}{top_bot*56}{top_right}")
 
@@ -507,12 +536,16 @@ while game_running:
             print_c_str(f"║ {'1 Log':^25} -> {'2 Planks':^25} ║")
             print_c_str(f"║ {'1 Log':^25} -> {'4 Sticks':^25} ║")
 
+            bag_empty = False
+
         if plr_inv.get("Planks") >= 3 and plr_inv.get("Sticks") >= 2:
             print_c_str(f"║{' ':56}║")
             print_c_str(
                 f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Pickaxe':^25} ║")
             print_c_str(
                 f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Axe':^25} ║")
+            
+            bag_empty = False
 
         if plr_inv.get("Stone") >= 3 and plr_inv.get("Sticks") >= 2:
             print_c_str(f"║{' ':56}║")
@@ -520,21 +553,34 @@ while game_running:
                 f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Pickaxe':^25} ║")
             print_c_str(
                 f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Axe':^25} ║")
+            
+            bag_empty = False
 
         if plr_inv.get("Iron Ingot") >= 3 and plr_inv.get("Sticks") >= 2:
             print_c_str(f"║{' ':56}║")
             print_c_str(
                 f"║ {'2x Sticks, 3x Iron Ingots':^25} -> {'1 Iron Pickaxe':^25} ║")
+            
+            bag_empty = False
 
         if plr_inv.get("Gold") >= 5:
             print_c_str(f"║{' ':56}║")
             print_c_str(
                 f"║ {'5x Gold':^25} -> {'1 Gold Statue':^25} ║")
+            
+            bag_empty = False
+
+        if bag_empty:
+            
+            print_c_str(f"║{' ':56}║")
+            print_c_str(f"║{'You cant craft anything!':^56}║")
+            game_craft = False
 
         print_c_str(f"║{' ':56}║")
         print_c_str_nl(f"{bot_left}{top_bot*56}{bot_right}")
 
         while game_craft:
+            
             print_c_str_nl("What would you like to craft?: ")
             player_input = input()
 
@@ -572,7 +618,7 @@ while game_running:
 
                     elif 1 <= int(player_input) <= max_craft:
                         plr_inv["Logs"] -= int(player_input)
-                        plr_inv["Planks"] += (int(player_input*2))
+                        plr_inv["Planks"] += (int(player_input)*2)
 
                         print_in_box(
                             f"You crafted {int(player_input)*2} Planks.")
@@ -658,6 +704,7 @@ while game_running:
                         print_in_box(
                             f"You have {plr_inv['Planks']} Planks and {plr_inv['Sticks']} Sticks left.")
 
+                        wood_pick_f_c = True
                         game_craft = False
                         break
 
@@ -701,6 +748,7 @@ while game_running:
                         print_in_box(
                             f"You have {plr_inv['Planks']} Planks and {plr_inv['Sticks']} Sticks left.")
 
+                        wood_axe_f_c = True
                         game_craft = False
                         break
 
@@ -744,6 +792,7 @@ while game_running:
                         print_in_box(
                             f"You have {plr_inv['Stone']} Stone and {plr_inv['Sticks']} Sticks left.")
 
+                        stone_pick_f_c = True
                         game_craft = False
                         break
 
@@ -787,6 +836,7 @@ while game_running:
                         print_in_box(
                             f"You have {plr_inv['Stone']} Stone and {plr_inv['Sticks']} Sticks left.")
 
+                        stone_axe_f_c = True
                         game_craft = False
                         break
 
@@ -830,6 +880,7 @@ while game_running:
                         print_in_box(
                             f"You have {plr_inv['Iron Ingot']} Iron Ingots and {plr_inv['Sticks']} Sticks left.")
 
+                        iron_pick_f_c = True
                         game_craft = False
                         break
 
@@ -1002,7 +1053,6 @@ while game_running:
                     f"{player_input} is not a valid action, Try again!")
                 print_in_box(
                     "Type [Smelt Controls] if you want to see actions you can perform.")
-
 
 # Invalid Action -
     else:
