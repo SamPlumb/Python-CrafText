@@ -2,8 +2,6 @@ import time
 import textwrap
 import random
 
-# TODO - Add functionality to Gold statue
-
 # TODO - Durability
 # Wood pick 10 durability
 # 20 durability - Stone axe  Stone pickaxe
@@ -16,13 +14,12 @@ char_len_of_ctrs = []
 craft_char_len_of_ctrs = []
 qty_added = 0
 type_added = 0
+bag_empty = True
 
-main_menu = True
-display_intro = True
-
-game_running = False
-game_start = True
-
+# Game States -
+game_running = True
+game_main_menu = True
+game_win = False
 game_chop = False
 game_mine = False
 game_craft = False
@@ -34,9 +31,6 @@ iron_pick_f_c = False
 
 wood_axe_f_c = False
 stone_axe_f_c = False
-
-bag_empty = True
-
 
 # Box Ascii -
 top_bot = "═"
@@ -56,7 +50,7 @@ plr_inv = {"Logs": 0,
            "Coal": 0,
            "Iron Ore": 0,
            "Iron Ingot": 0,
-           "Gold": 0,
+           "Gold": 5,
            "Wooden Pickaxe": 0,
            "Stone Pickaxe": 0,
            "Iron Pickaxe": 0,
@@ -145,47 +139,45 @@ def open_bag():
     print_c_str_nl(f"{bot_left}{top_bot*22}{bot_right}")
 
 
-# Main Menu Loop -
-while main_menu:
-
-    if display_intro == True:
-        print_in_box("Welcome To CrafText")
-        ctrs_menu(ctrs_list, ctrs_width_ctrs)
-        print()
-        display_intro = False
-
-    print_c_str_nl("Type [Start] to start a new game, [Quit] to exit: ")
-    player_input = input()
-
-    if player_input.lower() == "quit":
-        quit_game()
-
-    elif player_input.lower() == "start":
-        main_menu = False
-        display_intro = True
-        game_running = True
-
-    else:
-        print_in_box("Answer Invalid, Try again!")
-
 # Main Game Loop -
 while game_running:
 
+    # Main Menu Loop -
+    if game_main_menu:
+
+        print_in_box("Welcome To CrafText")
+        ctrs_menu(ctrs_list, ctrs_width_ctrs)
+        print()
+
+        while game_main_menu:
+
+            game_timer = time.time()
+
+            print_c_str_nl(
+                "Type [Start] to start a new game, [Quit] to exit: ")
+            player_input = input()
+
+            if player_input.lower() == "quit":
+                quit_game()
+
     # Game Intro -
-    if game_start == True:
+            elif player_input.lower() == "start":
 
-        print_c_str(f"{top_left}{top_bot*98}{top_right}")
+                print_c_str(f"{top_left}{top_bot*98}{top_right}")
 
-        for line in textwrap.wrap("Ahead of you, a peaceful river meanders through the valley, its clear waters reflecting the soft glow of the sky. The banks are lined with tall, sturdy trees, creating a quiet rhythm with every whisper of wind. In the distance, mountains pierce the sky with snow-capped peaks, while their lower slopes are covered in a blanket of pine trees.", width=96):
-            print(f"║ {line.center(96)} ║")
+                for line in textwrap.wrap("Ahead of you, a peaceful river meanders through the valley, its clear waters reflecting the soft glow of the sky. The banks are lined with tall, sturdy trees, creating a quiet rhythm with every whisper of wind. In the distance, mountains pierce the sky with snow-capped peaks, while their lower slopes are covered in a blanket of pine trees.", width=96):
+                    print(f"║ {line.center(96)} ║")
 
-        print_c_str_nl(f"{bot_left}{top_bot*98}{bot_right}")
+                print_c_str_nl(f"{bot_left}{top_bot*98}{bot_right}")
 
-        print_c_str_nl(
-            "Your pockets feel empty, and you only have the clothes on your back. What do you choose to do?")
+                print_c_str_nl(
+                    "Your pockets feel empty, and you only have the clothes on your back. What do you choose to do?")
+                player_input = input()
 
-        player_input = input()
-        game_start = False
+                game_main_menu = False
+
+            else:
+                print_in_box("Answer Invalid, Try again!")
 
 # Quit Game -
     if player_input.lower() == "quit":
@@ -218,7 +210,8 @@ while game_running:
 
                     if stone_axe_f_c:
 
-                        print_in_box("This new Axe is sure to fell a tree in no time!")
+                        print_in_box(
+                            "This new Axe is sure to fell a tree in no time!")
 
                         stone_axe_f_c = False
 
@@ -250,10 +243,11 @@ while game_running:
                     quit_game()
 
                 elif player_input.lower() == "yes":
-                    
+
                     if wood_axe_f_c:
 
-                        print_in_box("It will chop down a tree, won't it? Save my hands from punching a tree at least...")
+                        print_in_box(
+                            "It will chop down a tree, won't it? Save my hands from punching a tree at least...")
 
                         wood_axe_f_c = False
 
@@ -340,10 +334,10 @@ while game_running:
                     type_added = random.randint(1, 10)
 
                     if iron_pick_f_c:
-                        
+
                         print_in_box(
                             "Your new pickaxe carves though rock like butter enabling you to dig deeper and deeper")
-                        
+
                         iron_pick_f_c = False
 
         # Gain Stone w Iron Pickaxe
@@ -411,12 +405,12 @@ while game_running:
                 elif player_input.lower() == "yes":
 
                     if stone_pick_f_c:
-                        
+
                         print_in_box(
-                        "Your new Stone Pickaxe cuts though the rock easier enabling you to dig deeper into the earth.")
+                            "Your new Stone Pickaxe cuts though the rock easier enabling you to dig deeper into the earth.")
                         print_in_box(
                             "You may potentially find better minerals.")
-                        
+
                         stone_pick_f_c = False
 
                     game_mine = False
@@ -473,10 +467,11 @@ while game_running:
                     quit_game()
 
                 elif player_input.lower() == "yes":
-                    
+
                     if wood_pick_f_c:
-                        
-                        print_in_box("You get your freshly made pickaxe from your bag and head to the mountains for the first time.")
+
+                        print_in_box(
+                            "You get your freshly made pickaxe from your bag and head to the mountains for the first time.")
                         wood_pick_f_c = False
 
                     game_mine = False
@@ -544,7 +539,7 @@ while game_running:
                 f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Pickaxe':^25} ║")
             print_c_str(
                 f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Axe':^25} ║")
-            
+
             bag_empty = False
 
         if plr_inv.get("Stone") >= 3 and plr_inv.get("Sticks") >= 2:
@@ -553,25 +548,25 @@ while game_running:
                 f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Pickaxe':^25} ║")
             print_c_str(
                 f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Axe':^25} ║")
-            
+
             bag_empty = False
 
         if plr_inv.get("Iron Ingot") >= 3 and plr_inv.get("Sticks") >= 2:
             print_c_str(f"║{' ':56}║")
             print_c_str(
                 f"║ {'2x Sticks, 3x Iron Ingots':^25} -> {'1 Iron Pickaxe':^25} ║")
-            
+
             bag_empty = False
 
         if plr_inv.get("Gold") >= 5:
             print_c_str(f"║{' ':56}║")
             print_c_str(
                 f"║ {'5x Gold':^25} -> {'1 Gold Statue':^25} ║")
-            
+
             bag_empty = False
 
         if bag_empty:
-            
+
             print_c_str(f"║{' ':56}║")
             print_c_str(f"║{'You cant craft anything!':^56}║")
             game_craft = False
@@ -580,7 +575,7 @@ while game_running:
         print_c_str_nl(f"{bot_left}{top_bot*56}{bot_right}")
 
         while game_craft:
-            
+
             print_c_str_nl("What would you like to craft?: ")
             player_input = input()
 
@@ -919,6 +914,7 @@ while game_running:
                         print_in_box(f"You have {plr_inv['Gold']} Gold left.")
 
                         game_craft = False
+                        game_win = True
                         break
 
                     else:
@@ -1062,6 +1058,23 @@ while game_running:
             "Type [Controls] if you want to see actions you can perform.")
 
 # Next Action -
-    if game_start == False:
+    if not game_win:
         print_c_str_nl("What would you like to do next?: ")
         player_input = input()
+
+# Game Complete -
+    if game_win:
+        win_time = (time.time()) - game_timer
+        print_in_box(f"You beat the game in {int(win_time)} seconds!")
+
+        print_in_box(f"Would you like to continue (Yes/No)?: ")
+        player_input = input()
+
+        if player_input.lower() == "no":
+            game_main_menu = True
+
+        else:
+            game_win = False
+
+            print_c_str_nl("What would you like to do next?: ")
+            player_input = input()
