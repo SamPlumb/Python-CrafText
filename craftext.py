@@ -45,7 +45,7 @@ plr_inv = {"Logs": 0,
            "Coal": 0,
            "Iron Ore": 0,
            "Iron Ingot": 0,
-           "Gold": 5,
+           "Gold": 0,
            "Wooden Pickaxe": 0,
            "Stone Pickaxe": 0,
            "Iron Pickaxe": 0,
@@ -346,7 +346,7 @@ while game_running:
                         iron_pick_f_c = False
 
         # Gain Stone w Iron Pickaxe
-                    if 1 <= type_added <= 2:
+                    if type_added == 1:
                         qty_added = randint(3, 4)
                         plr_inv["Stone"] += qty_added
 
@@ -356,7 +356,7 @@ while game_running:
                             f"You now have {plr_inv.get('Stone')} Stone.")
 
         # Gain Coal w Iron Pickaxe
-                    elif 3 <= type_added <= 5:
+                    elif 2 <= type_added <= 3:
 
                         qty_added = randint(2, 3)
                         plr_inv["Coal"] += qty_added
@@ -367,7 +367,7 @@ while game_running:
                             f"You now have {plr_inv.get('Coal')} Coal.")
 
         # Gain Iron Ore w Iron Pickaxe
-                    elif 6 <= type_added <= 8:
+                    elif 4 <= type_added <= 7:
 
                         qty_added = randint(1, 2)
                         plr_inv["Iron Ore"] += qty_added
