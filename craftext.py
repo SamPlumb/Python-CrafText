@@ -1,11 +1,6 @@
 import time
-import textwrap
-import random
-
-# TODO - Durability
-# Wood pick 10 durability
-# 20 durability - Stone axe  Stone pickaxe
-# Iron pick - 30 durability
+from textwrap import wrap
+from random import randint
 
 # CrafText -
 
@@ -32,7 +27,6 @@ stone_axe_f_c = False
 
 # Box Ascii -
 top_bot = "═"
-bot = "═"
 sides = "║"
 
 top_left = "╔"
@@ -160,7 +154,7 @@ while game_running:
 
                 print_c_str(f"{top_left}{top_bot*98}{top_right}")
 
-                for line in textwrap.wrap("Ahead of you, a peaceful river meanders through the valley, its clear waters reflecting the soft glow of the sky. The banks are lined with tall, sturdy trees, creating a quiet rhythm with every whisper of wind. In the distance, mountains pierce the sky with snow-capped peaks, while their lower slopes are covered in a blanket of pine trees.", width=96):
+                for line in wrap("Ahead of you, a peaceful river meanders through the valley, its clear waters reflecting the soft glow of the sky. The banks are lined with tall, sturdy trees, creating a quiet rhythm with every whisper of wind. In the distance, mountains pierce the sky with snow-capped peaks, while their lower slopes are covered in a blanket of pine trees.", width=96):
                     print(f"║ {line.center(96)} ║")
 
                 print_c_str_nl(f"{bot_left}{top_bot*98}{bot_right}")
@@ -221,7 +215,7 @@ while game_running:
                         stone_axe_f_c = False
 
                     game_chop = False
-                    qty_added = random.randint(2, 3)
+                    qty_added = randint(2, 3)
                     plr_inv["Logs"] += qty_added
 
                     print_in_box(
@@ -257,7 +251,7 @@ while game_running:
                         wood_axe_f_c = False
 
                     game_chop = False
-                    qty_added = random.randint(1, 2)
+                    qty_added = randint(1, 2)
                     plr_inv["Logs"] += qty_added
 
                     print_in_box(
@@ -269,7 +263,7 @@ while game_running:
                 elif player_input.lower() == "no":
 
                     game_chop = False
-                    qty_added = random.randint(0, 1)
+                    qty_added = randint(0, 1)
 
                     print_in_box(
                         "You chose to try to chop a tree without the Axe from your bag... ")
@@ -301,7 +295,7 @@ while game_running:
         if game_chop:
 
             game_chop = False
-            qty_added = random.randint(0, 1)
+            qty_added = randint(0, 1)
 
             if qty_added == 0:
 
@@ -336,7 +330,7 @@ while game_running:
                 elif player_input.lower() == "yes":
 
                     game_mine = False
-                    type_added = random.randint(1, 10)
+                    type_added = randint(1, 10)
 
                     if iron_pick_f_c:
 
@@ -347,7 +341,7 @@ while game_running:
 
         # Gain Stone w Iron Pickaxe
                     if 1 <= type_added <= 2:
-                        qty_added = random.randint(3, 4)
+                        qty_added = randint(3, 4)
                         plr_inv["Stone"] += qty_added
 
                         print_in_box(
@@ -358,7 +352,7 @@ while game_running:
         # Gain Coal w Iron Pickaxe
                     elif 3 <= type_added <= 5:
 
-                        qty_added = random.randint(2, 3)
+                        qty_added = randint(2, 3)
                         plr_inv["Coal"] += qty_added
 
                         print_in_box(
@@ -369,7 +363,7 @@ while game_running:
         # Gain Iron Ore w Iron Pickaxe
                     elif 6 <= type_added <= 8:
 
-                        qty_added = random.randint(1, 2)
+                        qty_added = randint(1, 2)
                         plr_inv["Iron Ore"] += qty_added
 
                         print_in_box(
@@ -419,11 +413,11 @@ while game_running:
                         stone_pick_f_c = False
 
                     game_mine = False
-                    type_added = random.randint(1, 10)
+                    type_added = randint(1, 10)
 
         # Gain Stone w Stone Pickaxe
                     if 1 <= type_added <= 3:
-                        qty_added = random.randint(1, 3)
+                        qty_added = randint(1, 3)
                         plr_inv["Stone"] += qty_added
 
                         print_in_box(
@@ -434,7 +428,7 @@ while game_running:
         # Gain Coal w Stone Pickaxe
                     elif 4 <= type_added <= 7:
 
-                        qty_added = random.randint(1, 2)
+                        qty_added = randint(1, 2)
                         plr_inv["Coal"] += qty_added
 
                         print_in_box(
@@ -480,7 +474,7 @@ while game_running:
                         wood_pick_f_c = False
 
                     game_mine = False
-                    type_added = random.randint(1, 10)
+                    type_added = randint(1, 10)
 
         # Gain Stone w Wooden Pickaxe
                     if 1 <= type_added <= 5:
