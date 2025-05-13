@@ -10,8 +10,6 @@ import random
 # CrafText -
 
 # Variables -
-char_len_of_ctrs = []
-craft_char_len_of_ctrs = []
 qty_added = 0
 type_added = 0
 bag_empty = True
@@ -77,15 +75,6 @@ craft_ctrs_list = ["Craft/Smelt Options",
                    "[Item Name] - type the name of the item you wish to craft/smelt, eg. [Wooden Pickaxe]"
                    ]
 
-# Find length of all the controls in list to create box around them
-for ctr in ctrs_list:
-    char_len_of_ctrs.append(len(ctr))
-ctrs_width_ctrs = max(char_len_of_ctrs)
-
-for ctr in craft_ctrs_list:
-    craft_char_len_of_ctrs.append(len(ctr))
-craft_ctrs_width_ctrs = max(craft_char_len_of_ctrs)
-
 
 # Functions -
 # Center text - with 100 padding
@@ -122,21 +111,22 @@ def ctrs_menu(ctr_list, width):
     print_c_str_nl(f"{bot_left}{top_bot*(width+2)}{bot_right}")
 
 
+# Find longest str in list
+def max_char_in_list(list):
+    max_str_len = 0
+
+    for itm in list:
+        if len(itm) > max_str_len:
+            max_str_len = len(itm)
+
+    return max_str_len
+
+
 # Quit Game - Text w box around, 5 second sleep before window closes.
 def quit_game():
     print_in_box("Thank you for playing!")
     time.sleep(5)
     exit()
-
-
-# Open Bag
-def open_bag():
-    print_c_str(f"{top_left}{top_bot*22}{top_right}")
-    for itm, qty in plr_inv.items():
-        if qty > 0:
-            print_c_str(f"║ {itm:15}: {qty:3} ║")
-
-    print_c_str_nl(f"{bot_left}{top_bot*22}{bot_right}")
 
 
 # Main Game Loop -
@@ -146,7 +136,7 @@ while game_running:
     if game_main_menu:
 
         print_in_box("Welcome To CrafText")
-        ctrs_menu(ctrs_list, ctrs_width_ctrs)
+        ctrs_menu(ctrs_list, (max_char_in_list(ctrs_list)))
         print()
 
         while game_main_menu:
@@ -162,6 +152,11 @@ while game_running:
 
     # Game Intro -
             elif player_input.lower() == "start":
+
+                if game_win:
+
+                    plr_inv = dict.fromkeys(plr_inv, 0)
+                    game_win = False
 
                 print_c_str(f"{top_left}{top_bot*98}{top_right}")
 
@@ -185,11 +180,21 @@ while game_running:
 
 # Open Controls Menu -
     elif player_input.lower() == "controls":
-        ctrs_menu(ctrs_list, ctrs_width_ctrs)
+        ctrs_menu(ctrs_list, max_char_in_list(ctrs_list))
 
 # Open Bag -
     elif player_input.lower() == "bag":
-        open_bag()
+        print_c_str(f"{top_left}{top_bot*22}{top_right}")
+
+        if any(plr_inv.values()):
+            for itm, qty in plr_inv.items():
+                if qty > 0:
+                    print_c_str(f"║ {itm:15}: {qty:3} ║")
+
+        else:
+            print_c_str(f"║{'Your Bag is Empty.':^22}║")
+
+        print_c_str_nl(f"{bot_left}{top_bot*22}{bot_right}")
 
 # Wood Chop -
     elif player_input.lower() == "chop":
@@ -522,57 +527,46 @@ while game_running:
 # Craft -
     elif player_input.lower() == "craft":
         game_craft = True
-        bag_empty = True
 
-        print_c_str(f"{top_left}{top_bot*56}{top_right}")
+        if any(plr_inv.values()):
 
-        if plr_inv.get("Logs") >= 1:
-            print_c_str(f"║{' ':56}║")
-            print_c_str(f"║ {'1 Log':^25} -> {'2 Planks':^25} ║")
-            print_c_str(f"║ {'1 Log':^25} -> {'4 Sticks':^25} ║")
+            print_c_str(f"{top_left}{top_bot*56}{top_right}")
 
-            bag_empty = False
+            if plr_inv.get("Logs") >= 1:
+                print_c_str(f"║{' ':56}║")
+                print_c_str(f"║ {'1 Log':^25} -> {'2 Planks':^25} ║")
+                print_c_str(f"║ {'1 Log':^25} -> {'4 Sticks':^25} ║")
 
-        if plr_inv.get("Planks") >= 3 and plr_inv.get("Sticks") >= 2:
-            print_c_str(f"║{' ':56}║")
-            print_c_str(
-                f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Pickaxe':^25} ║")
-            print_c_str(
-                f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Axe':^25} ║")
+            if plr_inv.get("Planks") >= 3 and plr_inv.get("Sticks") >= 2:
+                print_c_str(f"║{' ':56}║")
+                print_c_str(
+                    f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Pickaxe':^25} ║")
+                print_c_str(
+                    f"║ {'2x Sticks, 3x Planks':^25} -> {'1 Wooden Axe':^25} ║")
 
-            bag_empty = False
+            if plr_inv.get("Stone") >= 3 and plr_inv.get("Sticks") >= 2:
+                print_c_str(f"║{' ':56}║")
+                print_c_str(
+                    f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Pickaxe':^25} ║")
+                print_c_str(
+                    f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Axe':^25} ║")
 
-        if plr_inv.get("Stone") >= 3 and plr_inv.get("Sticks") >= 2:
-            print_c_str(f"║{' ':56}║")
-            print_c_str(
-                f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Pickaxe':^25} ║")
-            print_c_str(
-                f"║ {'2x Sticks, 3x Stone':^25} -> {'1 Stone Axe':^25} ║")
+            if plr_inv.get("Iron Ingot") >= 3 and plr_inv.get("Sticks") >= 2:
+                print_c_str(f"║{' ':56}║")
+                print_c_str(
+                    f"║ {'2x Sticks, 3x Iron Ingots':^25} -> {'1 Iron Pickaxe':^25} ║")
 
-            bag_empty = False
-
-        if plr_inv.get("Iron Ingot") >= 3 and plr_inv.get("Sticks") >= 2:
-            print_c_str(f"║{' ':56}║")
-            print_c_str(
-                f"║ {'2x Sticks, 3x Iron Ingots':^25} -> {'1 Iron Pickaxe':^25} ║")
-
-            bag_empty = False
-
-        if plr_inv.get("Gold") >= 5:
-            print_c_str(f"║{' ':56}║")
-            print_c_str(
-                f"║ {'5x Gold':^25} -> {'1 Gold Statue':^25} ║")
-
-            bag_empty = False
-
-        if bag_empty:
+            if plr_inv.get("Gold") >= 5:
+                print_c_str(f"║{' ':56}║")
+                print_c_str(
+                    f"║ {'5x Gold':^25} -> {'1 Gold Statue':^25} ║")
 
             print_c_str(f"║{' ':56}║")
-            print_c_str(f"║{'You cant craft anything!':^56}║")
+            print_c_str_nl(f"{bot_left}{top_bot*56}{bot_right}")
+
+        else:
+            print_in_box("You cant craft anything!")
             game_craft = False
-
-        print_c_str(f"║{' ':56}║")
-        print_c_str_nl(f"{bot_left}{top_bot*56}{bot_right}")
 
         while game_craft:
 
@@ -587,7 +581,7 @@ while game_running:
                 break
 
             elif player_input.lower() == "craft controls":
-                ctrs_menu(craft_ctrs_list, craft_ctrs_width_ctrs)
+                ctrs_menu(craft_ctrs_list, max_char_in_list(craft_ctrs_list))
 
             elif player_input.lower() == "planks":
 
@@ -598,6 +592,7 @@ while game_running:
                     f"║ {'Total Logs':^30} : {plr_inv.get('Logs'):^5} ║")
                 print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'Planks Recipe:':^40}║")
+                print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'1x Log -> 2x Planks':^40}║")
                 print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
 
@@ -635,6 +630,7 @@ while game_running:
                     f"║ {'Total Logs':^30} : {plr_inv.get('Logs'):^5} ║")
                 print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'Sticks Recipe:':^40}║")
+                print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'1x Log -> 4x Sticks':^40}║")
                 print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
 
@@ -675,6 +671,7 @@ while game_running:
                     f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
                 print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'Wooden Pickaxe Recipe:':^40}║")
+                print_c_str(f"║{' ':^40}║")
                 print_c_str(
                     f"║{'2x Sticks, 3x Planks -> Wooden Pickaxe':^40}║")
                 print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
@@ -719,6 +716,7 @@ while game_running:
                     f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
                 print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'Wooden Axe Recipe:':^40}║")
+                print_c_str(f"║{' ':^40}║")
                 print_c_str(
                     f"║{'2x Sticks, 3x Planks -> Wooden Axe':^40}║")
                 print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
@@ -763,6 +761,7 @@ while game_running:
                     f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
                 print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'Stone Pickaxe Recipe:':^40}║")
+                print_c_str(f"║{' ':^40}║")
                 print_c_str(
                     f"║{'2x Sticks, 3x Stone -> Stone Pickaxe':^40}║")
                 print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
@@ -807,6 +806,7 @@ while game_running:
                     f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
                 print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'Stone Axe Recipe:':^40}║")
+                print_c_str(f"║{' ':^40}║")
                 print_c_str(
                     f"║{'2x Sticks, 3x Stone -> Stone Axe':^40}║")
                 print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
@@ -851,6 +851,7 @@ while game_running:
                     f"║ {'Total Sticks':^30} : {plr_inv.get('Sticks'):^5} ║")
                 print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'Iron Pickaxe Recipe:':^40}║")
+                print_c_str(f"║{' ':^40}║")
                 print_c_str(
                     f"║{'2x Sticks, 3x Iron Ingot -> Iron Pickaxe':^40}║")
                 print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
@@ -892,6 +893,7 @@ while game_running:
                     f"║ {'Total Gold':^30} : {plr_inv.get('Gold'):^5} ║")
                 print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'Gold Statue Recipe:':^40}║")
+                print_c_str(f"║{' ':^40}║")
                 print_c_str(f"║{'5x Gold -> 1x Gold Statue':^40}║")
                 print_c_str_nl(f"{bot_left}{top_bot*40}{bot_right}")
 
@@ -935,19 +937,24 @@ while game_running:
 
         game_smelt = True
 
-        print_c_str(f"{top_left}{top_bot*56}{top_right}")
+        if plr_inv.get("Logs") >= 4 or plr_inv.get("Coal") >= 3 and plr_inv.get("Iron Ore") >= 1:
+            print_c_str(f"{top_left}{top_bot*56}{top_right}")
 
-        if plr_inv.get("Logs") >= 4:
+            if plr_inv.get("Logs") >= 4:
+                print_c_str(f"║{' ':56}║")
+                print_c_str(f"║ {'4 Log':^25} -> {'1 Coal':^25} ║")
+
+            if plr_inv.get("Coal") >= 3 and plr_inv.get("Iron Ore") >= 1:
+                print_c_str(f"║{' ':56}║")
+                print_c_str(
+                    f"║ {'1x Iron Ore, 3x Coal':^25} -> {'1 Iron Ingot':^25} ║")
+
             print_c_str(f"║{' ':56}║")
-            print_c_str(f"║ {'4 Log':^25} -> {'1 Coal':^25} ║")
+            print_c_str_nl(f"{bot_left}{top_bot*56}{bot_right}")
 
-        if plr_inv.get("Coal") >= 3 and plr_inv.get("Iron Ore") >= 1:
-            print_c_str(f"║{' ':56}║")
-            print_c_str(
-                f"║ {'1x Iron Ore, 3x Coal':^25} -> {'1 Iron Ingot':^25} ║")
-
-        print_c_str(f"║{' ':56}║")
-        print_c_str_nl(f"{bot_left}{top_bot*56}{bot_right}")
+        else:
+            print_in_box("You cannot smelt anything!")
+            game_smelt = False
 
         while game_smelt:
             print_c_str_nl("What would you like to smelt?: ")
@@ -961,7 +968,7 @@ while game_running:
                 break
 
             elif player_input.lower() == "smelt controls":
-                ctrs_menu(craft_ctrs_list, craft_ctrs_width_ctrs)
+                ctrs_menu(craft_ctrs_list, max_char_in_list(craft_ctrs_list))
 
             elif player_input.lower() == "iron ingot":
 
@@ -1067,7 +1074,7 @@ while game_running:
         win_time = (time.time()) - game_timer
         print_in_box(f"You beat the game in {int(win_time)} seconds!")
 
-        print_in_box(f"Would you like to continue (Yes/No)?: ")
+        print_c_str_nl(f"Would you like to continue (Yes/No)?: ")
         player_input = input()
 
         if player_input.lower() == "no":
