@@ -2,9 +2,9 @@ import time
 from textwrap import wrap
 from random import randint
 
-# CrafText -
+# CrafText - Text based crafting simulator
 
-# Variables -
+# region        # Variables -
 qty_added = 0
 type_added = 0
 bag_empty = True
@@ -33,8 +33,11 @@ top_left = "╔"
 top_right = "╗"
 bot_left = "╚"
 bot_right = "╝"
+# endregion     # End Variables
 
-# Items Dict -
+# region        # Items Dictionary / Control Lists -
+
+# Player Items Dictionary -
 plr_inv = {"Logs": 0,
            "Planks": 0,
            "Sticks": 0,
@@ -50,7 +53,7 @@ plr_inv = {"Logs": 0,
            "Stone Axe": 0,
            "Gold Statue": 0}
 
-# Controls list -
+# Control Lists -
 ctrs_list = ["Controls / Player Choices",
              " ",
              "[Quit] - Closes the game",
@@ -68,10 +71,12 @@ craft_ctrs_list = ["Craft/Smelt Options",
                    "[None] - Closes crafting/smelt menu",
                    "[Item Name] - type the name of the item you wish to craft/smelt, eg. [Wooden Pickaxe]"
                    ]
+# endregion     # End Dict/Lists
 
-
-# Functions -
+# region        # Game Functions -
 # Center text - with 100 padding
+
+
 def print_c_str(text, padding=100, char_fill=" "):
     text = text.center(padding, char_fill)
     print(text)
@@ -121,9 +126,10 @@ def quit_game():
     print_in_box("Thank you for playing!")
     time.sleep(5)
     exit()
+# endregion     # End Functions
 
 
-# Main Game Loop -
+# region        # Main Game Loop -
 while game_running:
 
     # Main Menu Loop -
@@ -1079,3 +1085,5 @@ while game_running:
 
             print_c_str_nl("What would you like to do next?: ")
             player_input = input()
+
+# endregion     # Game Loop
